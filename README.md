@@ -38,7 +38,7 @@ Features (to come)
   * Info about servers returned in different formats
 * Importer/exporters
   * Import from xls, txt or others
-* Lot more!
+* Lots more!
 
 
 Feature apps
