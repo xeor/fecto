@@ -27,7 +27,7 @@ function add_attribute(thisObj, tableObj) {
     var dataArray = $(thisObj).closest('form').serializeArray();
     dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
 
-    $.post('/serverinfo/api/server/attribute/', dataArray, function(data) {
+    $.post( serverinfoRootURL + 'api/server/attribute/', dataArray, function(data) {
         tableObj.html(
             $(data.row).hide().fadeIn(300)
         );
@@ -39,7 +39,7 @@ function add_ip(thisObj, tableObj) {
     var dataArray = $(thisObj).closest('form').serializeArray();
     dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
 
-    $.post('/serverinfo/api/server/ip/', dataArray, function(data) {
+    $.post( serverinfoRootURL + 'api/server/ip/', dataArray, function(data) {
         tableObj.html(
             $(data.row).hide().fadeIn(300)
         );
@@ -56,7 +56,7 @@ function get_ip_location(thisObj) {
 
     $.ajax({
         type:"GET",
-    	url: '/serverinfo/api/getIpHelperForms/?_accept=text/raw',
+    	url: serverinfoRootURL + 'api/getIpHelperForms/?_accept=text/raw',
     	cache: false,
         data: dataArray,
     	success: function(form_data)
@@ -75,7 +75,7 @@ function get_ip_vlan(thisObj) {
 
     $.ajax({
         type:"GET",
-    	url: '/serverinfo/api/getIpHelperNext/?_accept=text/raw',
+    	url: serverinfoRootURL + 'api/getIpHelperNext/?_accept=text/raw',
     	cache: false,
         data: dataArray,
     	success: function(form_data)
@@ -98,7 +98,7 @@ $.editable.addInputType('checkbox', {
 });
 
 $(document).ready(function() {
-    $(".edit-text").editable("/serverinfo/api/server/inlineForm/?_accept=text/raw", {
+    $(".edit-text").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
@@ -108,7 +108,7 @@ $(document).ready(function() {
         style: 'display: inline',
     });
 
-    $(".edit-textarea").editable("/serverinfo/api/server/inlineForm/?_accept=text/raw", {
+    $(".edit-textarea").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
@@ -119,12 +119,12 @@ $(document).ready(function() {
         rows: 3,
     });
 
-    $(".edit-select").editable("/serverinfo/api/server/inlineForm/?_accept=text/raw", {
+    $(".edit-select").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
         type   : 'select',
-        loadurl : '/serverinfo/api/server/inlineForm/',
+        loadurl : serverinfoRootURL + 'api/server/inlineForm/',
         cancel: 'Cancel',
         submit: 'OK',
         style: 'display: inline',
@@ -132,12 +132,12 @@ $(document).ready(function() {
 
     // We dont use checkboxes yet.. But it is a custom type with a
     // true/false select box..
-    $(".edit-checkbox").editable("/serverinfo/api/server/inlineForm/?_accept=text/raw", {
+    $(".edit-checkbox").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
         type   : 'checkbox',
-        loadurl : '/serverinfo/api/server/inlineForm/',
+        loadurl : serverinfoRootURL + 'api/server/inlineForm/',
         cancel: 'Cancel',
         submit: 'OK',
         style: 'display: inline',
@@ -153,7 +153,7 @@ $(document).ready(function() {
         dataArray.push({'name': 'id', 'value': $(this).attr('rel')});
         var table_obj = $(this).closest('.attr_table_wrapper');
         $.ajax({
-            url: '/serverinfo/api/server/attribute/?remove',
+            url: serverinfoRootURL + 'api/server/attribute/?remove',
             type: 'GET',
             dataType: 'json',
             data: dataArray,
@@ -192,7 +192,7 @@ $(document).ready(function() {
         dataArray.push({'name': 'serverid', 'value': id_server});
 
         $.ajax({
-            url: '/serverinfo/api/server/ip/?remove',
+            url: serverinfoRootURL + 'api/server/ip/?remove',
             type: 'GET',
             dataType: 'json',
             data: dataArray,
@@ -221,7 +221,7 @@ $(document).ready(function() {
         var statusObj = $(this).siblings('.ip_check_status');
 
         $.ajax({
-            url: '/serverinfo/api/server/ip/?check',
+            url: serverinfoRootURL + 'api/server/ip/?check',
             type: 'GET',
             dataType: 'json',
             data: dataArray,

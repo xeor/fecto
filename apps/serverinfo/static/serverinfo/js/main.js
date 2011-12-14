@@ -51,7 +51,7 @@ function fnFormatDetails ( nTr, thisObj )
 
     $.ajax({
         type:"GET",
-    	url: '/serverinfo/details/' + id_server,
+    	url: serverinfoRootURL + 'details/' + id_server,
     	cache: false,
     	success: function(msg)
     	{
@@ -70,13 +70,13 @@ function fnOpenClose ( oSettings )
 		    if ( this.src.match('details_close') )
 			{
 			    /* This row is already open - close it */
-			    this.src = "/static/serverinfo/img/details_open.png";
+			    this.src = '/static/serverinfo/img/details_open.png';
 			    //var nRemove = $(nTr).next()[0];
 			    //nRemove.parentNode.removeChild( nRemove );
 			    oTable.fnClose( nTr );
 			} else {
 			    /* Open this row */
-			    this.src = "/static/serverinfo/img/details_close.png";
+			    this.src = '/static/serverinfo/img/details_close.png';
 			    oTable.fnOpen( nTr, fnFormatDetails(nTr,this), 'serv_details' );
 		            oTable.fnDraw(); // FIXME, Need to refresh the row
 			}
@@ -188,7 +188,7 @@ $(document).ready(function() {
 				"url": sSource,
 				"data": aoData,
 				"success": function(json) {
-                                    $('#admLink_frozenlist').attr('href', freezeURLstart + json['serversCSV']);
+                                    $('#admLink_frozenlist').attr('href', serverinfoRootURL + '?freezeByID=' + json['serversCSV']);
                                     fnCallback(json)
                                 },
 				error: function() {
@@ -230,7 +230,7 @@ $(document).ready(function() {
             $.ajax({
                 type: 'POST',
                 async: false,
-                url: '/serverinfo/api/server/new/',
+                url: serverinfoRootURL + 'api/server/new/',
                 data: dataArray,
                 success: function(serverName){
                     $('#messagebox').html('Locked on new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');

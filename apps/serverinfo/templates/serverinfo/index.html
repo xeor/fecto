@@ -18,7 +18,7 @@ var filters = new Array();
 filters[{{ forloop.counter }} - 1] = "{{ f.id }}"
 {% endfor %}
 
-var freezeURLstart = '{% url serverinfo-root %}?freezeByID=';
+var serverinfoRootURL = '{% url serverinfo-root %}';
 var columns = new Array(); // Datatables starts at 1, so Array(null) is a placeholder, used? FIXME
 var aoColumns = new Array(); // A list of our columns and their options. No name assosiated with them, but one per columns.
 var defaultHidden = new Array();
