@@ -1,7 +1,6 @@
 var oTable;
 
-
-function dump(arr,level) {
+function dump(arr, level) {
     var dumped_text = "";
     if(!level) level = 2;
 
@@ -42,15 +41,12 @@ function getQueryParams(qs) {
 
 
 /* Formating function for row details */
-function fnFormatDetails ( nTr, thisObj )
-{
+function fnFormatDetails(nTr, thisObj) {
     var aData = oTable.fnGetData( nTr );
-
-    //var id_server=aData[1]; // table -> first column value (servername), should be server id?
-    var id_server=$(thisObj).attr('rel');
+    var id_server = $(thisObj).attr('rel');
 
     $.ajax({
-        type:"GET",
+        type: 'GET',
     	url: serverinfoRootURL + 'details/' + id_server,
     	cache: false,
     	success: function(msg)
@@ -61,31 +57,25 @@ function fnFormatDetails ( nTr, thisObj )
 }
 
 /* Event handler function */
-function fnOpenClose ( oSettings )
-{
+function fnOpenClose(oSettings) {
     $('td img', oTable.fnGetNodes() ).each( function () {
-
-	    $(this).click( function () {
-		    var nTr = this.parentNode.parentNode;
-		    if ( this.src.match('details_close') )
-			{
-			    /* This row is already open - close it */
-			    this.src = '/static/serverinfo/img/details_open.png';
-			    //var nRemove = $(nTr).next()[0];
-			    //nRemove.parentNode.removeChild( nRemove );
-			    oTable.fnClose( nTr );
-			} else {
-			    /* Open this row */
-			    this.src = '/static/serverinfo/img/details_close.png';
-			    oTable.fnOpen( nTr, fnFormatDetails(nTr,this), 'serv_details' );
-		            oTable.fnDraw(); // FIXME, Need to refresh the row
-			}
-		} );
-	} );
+	$(this).click( function () {
+	    var nTr = this.parentNode.parentNode;
+	    if ( this.src.match('details_close') ) {
+		/* This row is already open - close it */
+		this.src = '/static/serverinfo/img/details_open.png';
+		oTable.fnClose( nTr );
+	    } else {
+		/* Open this row */
+		this.src = '/static/serverinfo/img/details_close.png';
+		oTable.fnOpen( nTr, fnFormatDetails(nTr,this), 'serv_details' );
+		oTable.fnDraw(); // FIXME, Need to refresh the row
+	    }
+	});
+    });
 }
 
-function fnShowHide( iColName )
-{
+function fnShowHide(iColName) {
     /* Get the DataTables object again - this is not a recreation, just a get of the object */
     var oTable = $('#serverlist').dataTable();
     var iCol = iColIDMap[iColName];
@@ -99,156 +89,146 @@ function fnShowHide( iColName )
 
 function fnResetAllFilters() {
     var oSettings = oTable.fnSettings();
-    for(iCol = 0; iCol < oSettings.aoPreSearchCols.length; iCol++) {
+    for (iCol = 0; iCol < oSettings.aoPreSearchCols.length; iCol++) {
 	oSettings.aoPreSearchCols[ iCol ].sSearch = '';
     }
     $('.dataTables_filter input').val('').keyup();
     $('#ipLoc').val('').keyup();
 
-    $("tfoot input").each( function (i) {
-	    //this.className = "search_init";
-	    this.value = '';
-	    //this.value = asInitVals[$("tfoot input").index(this)];
-	} );
+    $('tfoot input').each( function (i) {
+	this.value = '';
+    });
 
-    // FIXME, also delete oTable cookie
-
+    // FIXME, should also delete oTable cookie
     oTable.fnSortNeutral();
     oTable.fnDraw();
-
-    //console.log(oSettings);
 }
 
-function fnCreateSelect( aData )
-{
-    var r='<select><option value=""></option>', i, iLen=aData.length;
-    for ( i=0 ; i<iLen ; i++ )
-	{
-	    r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
-	}
-    return r+'</select>';
+function fnCreateSelect(aData) {
+    var r = '<select><option value=""></option>', i, iLen = aData.length;
+    for (i = 0; i<iLen; i++) {
+	r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+    }
+    return r + '</select>';
 }
 
 
 $(document).ready(function() {
 
-	//TableToolsInit.sSwfPath = "/media/lib/dataTables-1.7/extras/TableTools/media/swf/ZeroClipboard.swf";
+    //TableToolsInit.sSwfPath = "/media/lib/dataTables-1.7/extras/TableTools/media/swf/ZeroClipboard.swf";
 
     // Start of table stuff
-	oTable = $('#serverlist').dataTable( {
-		"aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All (dont use if not needed)"]],
-		"bProcessing": true,
-		"bServerSide": true,
-		"bAutoWidth": false, // If we dont do this, it will look ugly when toggling columns hide/show
-		"bStateSave": true,
-		"sPaginationType": "full_numbers",
-		"sAjaxSource": "api/server/datatables/",
-		"fnServerData": function (sSource, aoData, fnCallback ) {
-		    for ( var i=0, len=filters.length; i<len; ++i ){
-			val = $("#filter_" + filters[i] + "_value").val();
-			if (typeof val === 'undefined') {
-			    val = '';
-			}
-			aoData.push( { "name": "filter_" + filters[i] + "_value", "value": val } );
-		    }
-		    for ( var i=0, len=columns.length; i<len; ++i ){
-			val = $("#columnfilter_" + columns[i]).val();
-			if (typeof val === 'undefined') {
-			    val = '';
-			}
-			aoData.push( { "name": "columnfilter_" + columns[i], "value": val } );
-		    }
+    oTable = $('#serverlist').dataTable( {
+	'aLengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All (dont use if not needed)']],
+	'bProcessing': true,
+	'bServerSide': true,
+	'bAutoWidth': false, // If we dont do this, it will look ugly when toggling columns hide/show
+	'bStateSave': true,
+	'sPaginationType': 'full_numbers',
+	'sAjaxSource': serverinfoRootURL + 'api/server/datatables/',
+	'fnServerData': function(sSource, aoData, fnCallback ) {
 
-                    if ($('span.newserver').length) {
-			aoData.push( { "name": "newserver", "value": $('span.newserver').attr('id') } );
-                    }
+	    for (var i = 0, len = filters.length; i<len; ++i) {
+		val = $('#filter_' + filters[i] + '_value').val();
+		if (typeof val === 'undefined') {
+		    val = '';
+		}
+		aoData.push({'name': 'filter_' + filters[i] + '_value', 'value': val});
+	    }
 
-                    var extraGETs = getQueryParams(document.location.search);
-                    if (extraGETs) {
-                        for(var gets in extraGETs) {
-                            aoData.push( { "name": "extra_" + gets, "value": extraGETs[gets] } );
-                        }
-                    }
+	    for (var i = 0, len = columns.length; i<len; ++i) {
+		val = $('#columnfilter_' + columns[i]).val();
+		if (typeof val === 'undefined') {
+		    val = '';
+		}
+		aoData.push( { "name": "columnfilter_" + columns[i], "value": val } );
+	    }
 
-		    //var visibleColumnsArr = [];
-                    var columnsVisibleFilterableArr = []
-		    $(".search_init").each(function() {
-			//visibleColumnsArr.push($(this).attr('id'));
-			 columnsVisibleFilterableArr.push($(this).attr('id'));
-		    });
-		    //var visibleColumns = visibleColumnsArr.join('.');
-                    var columnsVisibleFilterable = columnsVisibleFilterableArr.join('.');
+            if ($('span.newserver').length) {
+		aoData.push({'name': 'newserver', 'value': $('span.newserver').attr('id')});
+            }
 
-		    //aoData.push( { "name": "visibleColumnFilters", "value": visibleColumns } );
-		    aoData.push({ 'name': 'columnsVisibleFilterable', 'value': columnsVisibleFilterable });
+            var extraGETs = getQueryParams(document.location.search);
+            if (extraGETs) {
+                for(var gets in extraGETs) {
+                    aoData.push({'name': 'extra_' + gets, 'value': extraGETs[gets]});
+                }
+            }
 
-		    $.ajax( {
-			    "dataType": 'json',
-				"type": "GET",
-				"url": sSource,
-				"data": aoData,
-				"success": function(json) {
-                                    $('#admLink_frozenlist').attr('href', serverinfoRootURL + '?freezeByID=' + json['serversCSV']);
-                                    fnCallback(json)
-                                },
-				error: function() {
-				// FIXME, this should be a notifier instead
-				  alert("Error grabbing data from server..");
-			        }
-				});
-		},
-		"sDom": 'T<"clear">lfrtip',
-		"oLanguage": {
-		    "sSearch": "Search all visible columns:"
-		},
-		"aoColumns": aoColumns,
-		"aaSorting": [[1, 'asc']],
-		"fnDrawCallback": fnOpenClose
-	    } );
-
-	$("#serverlist_filter input").select()
-
-	$("#serverlist_filter").append('&nbsp;&nbsp;<a href="#" id="reset">Reset</a>');
-	$("#reset").click(function(event) {
-		fnResetAllFilters();
+            var columnsVisibleFilterableArr = []
+	    $('.search_init').each(function() {
+		columnsVisibleFilterableArr.push($(this).attr('id'));
 	    });
 
+            var columnsVisibleFilterable = columnsVisibleFilterableArr.join('.');
+	    aoData.push({'name': 'columnsVisibleFilterable', 'value': columnsVisibleFilterable});
 
-	// Footer stuff
-	$("tfoot input").keyup( function () {
-		/* Filter on the column (the index) of this element */
-		oTable.fnFilter( this.value, $("tfoot input").index(this) );
-	    } );
-
-
-        // New server button
-        $('#admLink_newserv').click(function() {
-            var dataArray = new Array();
-            dataArray.push({'name': 'custominfo', 'value': ''}); // placeholder
-            //dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')}); // No need for this yet
-
-            $.ajax({
-                type: 'POST',
-                async: false,
-                url: serverinfoRootURL + 'api/server/new/',
-                data: dataArray,
-                success: function(serverName){
-                    $('#messagebox').html('Locked on new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');
-                    $('#messagebox').addClass('info');
-                    $('#messagebox').show();
-                    oTable.fnDraw(); // If not there, it wont show our new server
-
-                    // fnDraw wont let us run this right after itself
-                    // is runned. It will be called automaticly later
-                    // in the code and makes our click action just
-                    // flash. If we dont call fnDraw, our new server
-                    // wont show up at all. Little catch22 which ends
-                    // up in that we haveto delay our click, and live
-                    // with doublecall to fnDraw within a very short timeperiod
-                    setTimeout("$('td img:first').click(); $('td img:first').hide()", 500);
+	    $.ajax({
+		dataType: 'json',
+		type: 'GET',
+		url: sSource,
+		data: aoData,
+		success: function(json) {
+                    $('#admLink_frozenlist').attr('href', serverinfoRootURL + '?freezeByID=' + json['serversCSV']);
+                    fnCallback(json)
                 },
-            });
+		error: function() {
+		    // FIXME, this should be a notifier instead
+		    alert("Error grabbing data from server..");
+		}
+	    });
+	},
+	'sDom': 'T<"clear">lfrtip',
+	'oLanguage': {
+	    'sSearch': 'Search all visible columns:'
+	},
+	'aoColumns': aoColumns,
+	'aaSorting': [[1, 'asc']],
+	'fnDrawCallback': fnOpenClose
+    }); // End of oTable = ...
+
+
+    $('#serverlist_filter input').select()
+
+    $('#serverlist_filter').append('&nbsp;&nbsp;<a href="#" id="reset">Reset</a>');
+    $('#reset').click(function(event) {
+	fnResetAllFilters();
+    });
+
+    // Footer stuff
+    $('tfoot input').keyup( function () {
+	/* Filter on the column (the index) of this element */
+	oTable.fnFilter( this.value, $("tfoot input").index(this) );
+    });
+
+    // New server button
+    $('#admLink_newserv').click(function() {
+        var dataArray = new Array();
+        dataArray.push({'name': 'custominfo', 'value': ''}); // placeholder
+        dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
+
+        $.ajax({
+            type: 'POST',
+            async: false,
+            url: serverinfoRootURL + 'api/server/new/',
+            data: dataArray,
+            success: function(serverName){
+                $('#messagebox').html('Locked on new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');
+                $('#messagebox').addClass('info');
+                $('#messagebox').show();
+                oTable.fnDraw();
+
+                // fnDraw wont let us run this right after itself
+                // is runned. It will be called automaticly later
+                // in the code and makes our click action just
+                // flash. If we dont call fnDraw, our new server
+                // wont show up at all. Little catch22 which ends
+                // up in that we haveto delay our click, and live
+                // with doublecall to fnDraw within a very short timeperiod
+                setTimeout("$('td img:first').click(); $('td img:first').hide()", 500);
+            },
         });
+    });
 
     // Newserver save and refresh button
     $('.newserverrefresh').live('click', function() {
@@ -256,68 +236,72 @@ $(document).ready(function() {
         return false;
     });
 
+    // Filter options
+    $('.filterOption').each( function () {
+	$('#table_' + this.id).hide()
+    });
 
-	// Filter options
-	$('.filterOption').each( function () {
-		$('#table_' + this.id).hide()
-		    });
-
-	$('.filterOption').toggle(function() {
-		$(this).css({"font-weight": "bold"});
-		$('#table_' + this.id).show();
-	    }, function() {
-		$(this).css({"font-weight": ""});
-		$('#table_' + this.id).hide();
-		$('#' + this.id + '_value').val('');
-		oTable.fnDraw();
-	    });
-
-	// Row selector
-	$('.rowSelect').click(function() {
-		if ( $(this).css("font-weight") == "bold" ) {
-		    $(this).css({"font-weight": ""});
-		} else {
-		    $(this).css({"font-weight": "bold"});
-		}
-		fnShowHide(this.id);
-	    });
-
-        $('.administerLinks').toggle(function() {
-		$(this).css({"font-weight": "bold"});
-		$('#table_' + this.id).show();
-	    }, function() {
-		$(this).css({"font-weight": ""});
-		$('#table_' + this.id).hide();
-	    });
+    $('.filterOption').toggle(function() {
+	$(this).css({'font-weight': 'bold'});
+	$('#table_' + this.id).show();
+    }, function() {
+	$(this).css({'font-weight': ''});
+	$('#table_' + this.id).hide();
+	$('#' + this.id + '_value').val('');
+	oTable.fnDraw();
+    });
 
 
-   $("select#lastAlive").bind('change keyup keydown', function(){
-     oTable.fnDraw();
-   })
-   $("select#lastAliveWay").bind('change keyup keydown', function(){
-     oTable.fnDraw();
-   })
+    // Row selector
+    $('.rowSelect').click(function() {
+	if ( $(this).css('font-weight') == 'bold' ) {
+	    $(this).css({'font-weight': ''});
+	} else {
+	    $(this).css({'font-weight': 'bold'});
+	}
+	fnShowHide(this.id);
+    });
 
-   $("select#lastMonitor").bind('change keyup keydown', function(){
-     oTable.fnDraw();
-   })
-   $("select#lastMonitorWay").bind('change keyup keydown', function(){
-     oTable.fnDraw();
-   })
+    $('.administerLinks').toggle(function() {
+	$(this).css({'font-weight': 'bold'});
+	$('#table_' + this.id).show();
+    }, function() {
+	$(this).css({'font-weight': ''});
+	$('#table_' + this.id).hide();
+    });
 
-   $("select#lastWinUpd").bind('change keyup keydown', function(){
-     oTable.fnDraw();
-   })
-   $("select#lastWinUpdWay").bind('change keyup keydown', function(){
-     oTable.fnDraw();
-   })
+    $('select#lastAlive').bind('change keyup keydown', function(){
+        oTable.fnDraw();
+    })
 
-   $("#special_filter_apply").click(function(){
-	   oTable.fnDraw();
-   })
-   $('#special_filter').keyup(function(e) {
-	   if(e.keyCode == 13) {
-	       oTable.fnDraw();
-	   }
-       });
- } );
+    $('select#lastAliveWay').bind('change keyup keydown', function(){
+        oTable.fnDraw();
+    })
+
+    $('select#lastMonitor').bind('change keyup keydown', function(){
+        oTable.fnDraw();
+    })
+
+    $('select#lastMonitorWay').bind('change keyup keydown', function(){
+        oTable.fnDraw();
+    })
+
+    $('select#lastWinUpd').bind('change keyup keydown', function(){
+        oTable.fnDraw();
+    })
+
+    $('select#lastWinUpdWay').bind('change keyup keydown', function(){
+        oTable.fnDraw();
+    })
+
+    $('#special_filter_apply').click(function(){
+	oTable.fnDraw();
+    })
+
+    $('#special_filter').keyup(function(e) {
+	if(e.keyCode == 13) {
+	    oTable.fnDraw();
+	}
+    });
+
+}); // End of $(document).ready(
