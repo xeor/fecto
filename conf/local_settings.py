@@ -138,6 +138,9 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'fecto.urls'
+ROOT_HOSTCONF = 'hosts'
+DEFAULT_HOST = 'fecto'
+
 
 TEMPLATE_DIRS = (
     SITE_ROOT + '/templates',
@@ -171,6 +174,7 @@ INSTALLED_APPS = (
     'apps.siteconfig',
 
     # Misc
+    'django_hosts',
     'south',
     'reversion',
     'compressor',

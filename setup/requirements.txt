@@ -12,6 +12,7 @@ django-globals
 ipaddr
 werkzeug
 djangorestframework
+django-hosts
 
 redis
 django-redis-cache

@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from apps.serverinfo import api_urls
 
@@ -14,3 +15,5 @@ urlpatterns = patterns('',
                        #url(r'^export/(.*)$', 'apps.serverinfo.views.export'),
 
                        )
+
+urlpatterns += staticfiles_urlpatterns()
