@@ -1,0 +1,24 @@
+Django
+South
+django-sentry
+django_compressor	# http://django_compressor.readthedocs.org/en/latest/
+simplejson
+django-picklefield # Dont know if we need this one yet
+#django-ajax-filtered-fields # Dunno if this is needed
+django_extensions
+django-debug-toolbar
+django-reversion
+django-globals
+ipaddr
+werkzeug
+djangorestframework
+
+redis
+django-redis-cache
+
+#hiredis # C library parser for redis, faster
+#django-redis-cache
+#django-redis-admin # alpha, not active
+
+django-treemenus # or..
+#django-navigen

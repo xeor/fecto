@@ -1,0 +1,75 @@
+{% load serverinfo_extras %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/jquery.jeditable.mini.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/js/edit.js"></script>
+
+<div class="detaillist" rel="{{ server.id }}"> <!-- This rel is used for some ajax queries -->
+
+<div class="details_wrapper">
+
+  <div class="details_geninfo">
+    <table class="details_geninfo_tbl">
+      <tr><td class="geninfo"><b>Server Name: </b></td><td><span class="edit-text" id="{{ server.id }}.name">{{ server.name }}</span></td></tr>
+      <tr><td class="geninfo"><b>Status: </b></td><td><span class="edit-select" id="{{ server.id }}.status">{{ server.status|parseStatus|safe }}</span></td></tr>
+      <tr><td class="geninfo"><b>Comment: </b></td><td><span class="edit-textarea" id="{{ server.id }}.description">{% autoescape off %}{{ server.description }}{% endautoescape %}</span></td></tr>
+      <tr><td class="geninfo"><b>Function: </b></td><td><span class="edit-text" id="{{ server.id }}.function">{{ server.function }}</span></td></tr>
+      <tr><td class="geninfo"><b>Registered:</b></td><td><span>{{ server.reg_time }}</span></td></tr>
+      <tr><td class="geninfo"><b>Last updated:</b></td><td><span>{{ server.upd_time }}</span></td></tr>
+      <tr><td class="geninfo"><b>Actions:</b></td><td><span>
+            {% for a in server.actions %}{{ a|safe }}&nbsp;&nbsp;{% endfor %}
+      </span></td></tr>
+
+    </table>
+  </div>
+
+<div class="details_attributes">
+  <fieldset class="attributes details_list">
+    <legend class="details_list">Attributes</legend>
+    <form action="" method="post" class="form_attributes">
+      {{ attr_form }}
+      <input type="hidden" name="server" value="{{ server.id }}" />
+      <a href="#" class="button attr_add">Add</a>
+    </form>
+
+    <div class="attr_table_wrapper table_wrapper">
+      {% if attributes_html %}
+        {{ attributes_html|safe }}
+      {% else %}
+        <p>There are currently no attributes set..</p>
+      {% endif %}
+    </div>
+  </fieldset>
+</div>
+
+
+  <div class="details_notefield">
+    <textarea>some text</textarea>
+  </div>
+
+</div>
+<br />
+<div class="wrap_network clear">
+  <fieldset class="network details_list">
+    <legend class="details_list">Network</legend>
+    <form action="" method="post" class="form_ip" id="ipform">
+      <input type="hidden" name="server" value="{{ server.id }}" />
+
+      <span id="net_form_helpers-{{ server.id }}">{{ net_form_helpers }}</span>
+      {{ net_form }}
+
+      <a href="#" class="button ip_check">Check</a>
+      <a href="#" class="button ip_add">Add</a>
+      &nbsp;&nbsp;&nbsp;<span class="ip_check_status"></span>
+    </form>
+
+    <div class="ip_table_wrapper table_wrapper">
+      {% if network_html %}
+        {{ network_html|safe }}
+      {% else %}
+        <p>There is currently no ip adresses set on this server..</p>
+      {% endif %}
+    </div>
+  </fieldset>
+</div>
+
+</div>

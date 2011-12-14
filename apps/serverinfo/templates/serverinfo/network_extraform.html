@@ -1,0 +1,14 @@
+{% for input in inputs %}
+{% if input.options.items %}
+{{ input.name }}: <select onchange="get_ip_{{ input.type }}(this)" name="{{ input.id }}" id="id_{{ input.id }}">
+  <option value=""></option>
+  {% for key, options in input.options.items %}
+    <option value="{{ key }}"
+            {% if options.selected %} selected="selected"{% endif %}>
+      {{ options.name }}</option>
+  {% endfor %}
+</select>
+{% endif %}
+{% endfor %}
+  
+

@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}Serverinfo{% endblock title %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/media/css/demo_page.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/media/css/demo_table.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/extras/TableTools/media/css/TableTools.css" type="text/css" charset="utf-8" />
+
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/css/main.css" type="text/css" charset="utf-8" />
+{% endblock extracss %}
+
+{% block extrajs %}
+<script type="text/javascript">
+
+// Filters that we will need to get back from the browser
+var filters = new Array();
+{% for f in filters %}
+filters[{{ forloop.counter }} - 1] = "{{ f.id }}"
+{% endfor %}
+
+var freezeURLstart = '{% url serverinfo-root %}?freezeByID=';
+var columns = new Array(); // Datatables starts at 1, so Array(null) is a placeholder, used? FIXME
+var aoColumns = new Array(); // A list of our columns and their options. No name assosiated with them, but one per columns.
+var defaultHidden = new Array();
+var iColIDMap = new Array();
+
+// +- images should always be visible
+htmlOptions = new Array();
+htmlOptions['sClass'] = 'center';
+htmlOptions['sWidth'] = '1px';
+htmlOptions['bSortable'] = false;
+aoColumns.push(htmlOptions);
+
+{% for a in columns %}
+iColIDMap["row_{{ a.id }}"] = {{ forloop.counter }};
+columns.push("{{ a.id }}");
+
+htmlOptions = new Array();
+{% if a.noSort %}htmlOptions['bSortable'] = false;{% endif %}
+{% if a.defaultHidden %}htmlOptions['bVisible'] = false;{% endif %}
+aoColumns.push(htmlOptions);
+
+{% endfor %}
+
+</script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/js/main.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/extras/TableTools/media/js/ZeroClipboard.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/extras/TableTools/media/js/TableTools.js"></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/jquery.jeditable.mini.js"></script>
+
+{% endblock extrajs %}
+
+{% block content %}
+
+<div class="messagebox" id="messagebox"></div>
+<!--<div id="id_ip"></div>-->
+
+<div id="list">
+  <b>Administer: </b>
+  |
+  <a href="#" id="admLink_newserv">New server</a> |
+
+  <!-- Populated using javascript ( we need the list first :) ) -->
+  <a href="#" id="admLink_frozenlist">Freeze list</a> (
+  <a href="{% url serverinfo-root %}" id="admLink_unfreeze">unfreeze</a>) |
+  <br />
+
+  <b>Show/hide columns: </b>
+  |
+  {% for a in columns %}
+    <a href="#" class="rowSelect" style="font-weight: bold;" id="row_{{ a.id }}">{{ a.name }}</a> |
+  {% endfor %}
+  <br />
+
+  <b>Filter selectors: </b>
+  |
+  {% for f in filters %}
+    <a href="#" class="filterOption" id="filter_{{ f.id }}">{{ f.name }}</a> |
+  {% endfor %}
+
+  <table id="extraOpts">
+    {% for f in filters %}
+      {% include f.template %}
+    {% endfor %}
+  </table>
+
+  <table id="serverlist">
+    <thead>
+      <tr>
+	<th></th>
+	{% for a in columns %}
+	<th>{{ a.name }}</th>
+	{% endfor %}
+      </tr>
+    </thead>
+    <tfoot>
+      <tr>
+	<th></th>
+	{% for c in columns %}
+	  {% if c.noFilter %}
+	    <th></th>
+	  {% else %}
+	    <th><input type="text" class="search_init" value=""
+	  id="columnfilter_{{ c.id }}" placeholder="{{ c.name }}"></th>
+	  {% endif %}
+	{% endfor %}
+      </tr>
+  </table>
+</div>
+
+{% endblock %}

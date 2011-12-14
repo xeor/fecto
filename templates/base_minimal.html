@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% block metatags %}{% if metatags %}{{ metatags }}{% endif %}{% endblock metatags %}
+    <title>{% block title %}{% if title %}{{ title }}{% else %}Fecto{% endif %}{% endblock title %}</title>
+    <link rel="stylesheet" href="/media/css/main.css" type="text/css" media="screen, projection"/>
+    <!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="/media/css/ie.css" media="screen" />
+    <![endif]-->
+
+    <!-- To get the dropdown to work in IE -->
+    <script type="text/javascript" src="/media/js/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/media/js/jquery.dropdownPlain.js"></script>
+    <script type="text/javascript" language="javascript" src="/media/js/base.js"></script>
+
+    {% block extraheader %}{% if extraheader %}{{ extraheader }}{% endif %}{% endblock extraheader %}
+  </head>
+  <body bgcolor="#fcffff">
+
+    <!-- container -->
+    <div id="container">
+
+
+      <!-- main -->
+      <div id='main'>
+	<div id='content'>
+	  {% block content %}
+	  ...
+	  {% endblock content %}
+	</div>
+      </div>
+      <!-- END main -->
+
+    </div>
+    <!-- END container -->
+
+  </body>
+</html>

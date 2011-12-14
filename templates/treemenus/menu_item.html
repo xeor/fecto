@@ -1,0 +1,20 @@
+{% load tree_menu_tags %}
+{% load menu_extension_extras %}
+
+{% if menu_item.pk|checkmenuperm %}
+  {% if menu_item.has_children %}
+  <li>
+    <a href="{{ menu_item.url }}">{{ menu_item.caption }}</a>
+    {% ifequal menu_item.level 1 %}
+      <ul class="sub_menu">
+    {% else %}
+      <ul>
+    {% endifequal %}{% for child in menu_item.children %}
+       {% spaceless %}{% show_menu_item child %}{% endspaceless %}{% endfor %}
+      </ul>
+  </li>
+
+  {% else %}
+    <li class="menu_item"><a href="{{ menu_item.url }}">{{ menu_item.caption }}</a></li>
+  {% endif %}
+{% endif %}

@@ -1,0 +1,67 @@
+{# {% load tree_menu_tags %} #}
+{% load compress %}
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    {% block metatags %}{% if metatags %}{{ metatags }}{% endif %}{% endblock metatags %}
+    <title>{% block title %}{% if title %}{{ title }}{% else %}Fecto{% endif %}{% endblock title %}</title>
+
+    {% compress css %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/menu.css" type="text/css" charset="utf-8" />
+    <!--[if lte IE 7]>
+        <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/ie.css" type="text/css" charset="utf-8" />
+    <![endif]-->
+    {% block extracss %}{% if extracss %}{{ extracss }}{% endif %}{% endblock extracss %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css" charset="utf-8" />
+    {% endcompress %}    {% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dropdownPlain.js"></script>     <!-- To get the dropdown to work in IE -->
+    {% block extrajs %}{% if extrajs %}{{ extrajs }}{% endif %}{% endblock extrajs %}
+    <script type="text/javascript" src="{{ STATIC_URL }}js/main.js"></script>
+    {% endcompress %}
+    {% block extraheader %}{% if extraheader %}{{ extraheader }}{% endif %}{% endblock extraheader %}
+
+  </head>
+  <body bgcolor="#fcffff">
+    <!-- container -->
+    <div id="container">
+      <!-- header -->
+      <div id="header">
+	<span class="loginstatus">{% spaceless %}
+	  {% if user.is_authenticated %}
+	    Logged in as {{ user.username }} (<a href="/logout">Logout</a>)
+	  {% else %}
+	    <a href="/login">Login</a>
+	  {% endif %}
+	{% endspaceless %}</span>
+	<div id="headline">
+          <h1>Fecto</h1>
+	</div>
+      </div>
+      <div id="menu">
+	{# {% show_menu "Standard" %} #}
+      </div>
+      <!-- END header -->
+
+      <!-- content -->
+      <div id='content'>
+
+       {% if global_message %}
+       <div class="importantmessage">
+        <b>{{ global_message }}</b>
+       </div>
+       {% endif %}
+
+	{% block content %}
+	...
+	{% endblock content %}
+      </div>
+      <!-- END content -->
+    </div>
+    <!-- END container -->
+  </body>
+</html>

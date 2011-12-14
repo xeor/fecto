@@ -1,0 +1,12 @@
+<tr id="table_filter_manual">
+  <td colspan="2">
+    <input type="text" style="width: 80%;" id="filter_manual_value" name="filter_manual_value" />
+    <input type="button" id="filter_manual_btn" value="apply" />
+  </td>
+</tr>
+
+<script>
+  $("#filter_manual_btn").click(function() {
+    oTable.fnDraw();
+  });
+</script>

@@ -1,0 +1,18 @@
+<table cellpadding="0" cellspacing="0" border="0" class="tbl_in_details">
+  <tr class="details_head">
+    <th class="small_1">Name</th>
+    <th class="small_1">Value</th>
+    <th class="small_1">Description</th>
+    <th class="small_1">Action</th>
+  </tr>
+
+  {% for attr in attributes %}
+  <tr class="details">
+    <td class="detail_element">{{ attr.attributeType.name }}</td>
+    <td class="detail_element"><span class="edit-text" id="{{ attr.id }}-attribute">{{ attr.attributeValue.value }}</span></td>
+    <td class="detail_element">{{ attr.attributeType.description }}</td>
+    <td class="detail_element"><a href="#" class="attr_remove" rel="{{ attr.id }}">Remove</a></td>
+  </tr>
+  {% endfor %}
+
+</table>

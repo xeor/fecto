@@ -1,0 +1,74 @@
+.server {
+    color: blue;
+}
+
+.tbl_in_details {
+    width: 100%;
+}
+
+.wrap_attributes {
+    width: 100%;
+}
+
+.table_wrapper {
+    background:#ccf;
+}
+tr.details_head, tr.details, td.detail_element {
+    text-align:left;
+    vertical-align:top;
+    border-bottom:dashed 1px #aaa;
+    padding:7px 10px;
+}
+th.small_1 {
+    width: 1%;
+}
+
+fieldset.details_list {
+    #padding: 5px;
+    #border:2px solid aaf;
+    #margin: 20px;
+    #width: 100%;
+}
+
+legend.details_list {
+    #padding: 0.2em 0.5em;
+    #border:1px solid green;
+    #color:green;
+    #font-size:90%;
+    #text-align:right;
+    #margin: 5px auto;
+    font-weight: bold;
+}
+
+
+.details_geninfo {
+    float: left;
+    width: 30%;
+}
+
+td.geninfo {
+    white-space: nowrap
+}
+
+.details_notefield {
+    float: left;
+    width: 20%;
+}
+
+.details_attributes {
+    float: right;
+    width: 50%;
+    min-height: 100px;
+    #border-left: 1px solid gray;
+}
+
+fieldset.details_list {
+    border: 1px solid gray;
+    padding: 6px;
+    border-bottom-style: hidden;
+    border-right-style: hidden;
+}
+legend.details_list {
+    font-size: 90%;
+    border: 1px solid gray;
+}

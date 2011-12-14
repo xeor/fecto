@@ -1,0 +1,3 @@
+* osx
+** port install redis
+** redis-server /opt/local/etc/redis.conf

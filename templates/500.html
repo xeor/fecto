@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+  <head>
+    <link rel="stylesheet" href="/media/css/main.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="refresh" content="1200" />
+    <title>Generell feil</title>
+  </head>
+  <body bgcolor="#fcffff">
+    <div style="display: block; margin-left: auto; margin-right: auto; font-size: 100%;text-align:left;line-height:1.25em;">
+       <div class="messagebox nomessages">
+	 <p>Generell feil, g&aring; tilbake &aring; pr&oslash;v p&aring; nytt..<br />Om feilen gjentar seg, ta kontakt med <a href="mailto:lsolberg@sykehuspartner.no">Lars Solberg</a> eller <a href="mailto:jweaver@sykehuspartner.no">Jack Weaver</a>{% if request.sentry.id %} med referansenummer {{ request.sentry.id }}{% endif %}.</p>
+	 <p>Om feilen dukket opp av seg selv s&aring; kan du vente. Siden refreshes hvert minutt...</p>
+       </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+

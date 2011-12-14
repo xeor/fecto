@@ -1,0 +1,5 @@
+./manage sync_config
+Add configuration to apps/config.py
+
+# All config types should be dicts. Everything else is ignored, see apps.serverinfo.config
+# Dont worry about collisions with other apps, appname will be added.
