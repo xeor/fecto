@@ -1,25 +1,35 @@
 Django
 South
-django-sentry
-django_compressor	# http://django_compressor.readthedocs.org/en/latest/
 simplejson
-django-picklefield # Dont know if we need this one yet
+django-sentry
+
+# Dont know if we need this one yet
+django-picklefield
+
 #django-ajax-filtered-fields # Dunno if this is needed
 django_extensions
 django-debug-toolbar
+
 django-reversion
 django-globals
-ipaddr
-werkzeug
 djangorestframework
 django-hosts
+
+ipaddr
+werkzeug
+
+# http://django_compressor.readthedocs.org/en/latest/
+versiontools
+django-appconf
+django_compressor	
 
 redis
 django-redis-cache
 
-#hiredis # C library parser for redis, faster
-#django-redis-cache
-#django-redis-admin # alpha, not active
+# hiredis # C library parser for redis, faster
+# django-redis-cache
+# django-redis-admin # alpha, not active
 
-django-treemenus # or..
-#django-navigen
+django-treemenus
+# or..
+# django-navigen

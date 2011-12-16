@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# TODO
+#  Use fab instead!
+
 # FIXMEs
 # check pip
 # check virtualenv command
@@ -17,6 +20,9 @@
 # mkdir ext
 # Take apps/serverinfo/static/serverinfo/DataTables-1.8.1/ out of our git repo
 #   https://github.com/DataTables/DataTables/tree/master/media
+# Proxy option for pip..
+#  pip --proxy=http://proxyserver:8080
+
 
 """
 activate_this = "/.../ext/bin/activate_this.py"
@@ -49,11 +55,12 @@ def doVirtualEnv():
         # Check if virtualenv exists
         print 'And it didnt exist. Trying to create.'
         os.mkdir('ext')
-        subprocess.call(['virtualenv', '--no-site-packages', 'ext'])
+        subprocess.call(['virtualenv', 'ext'])
 
     print 'Rerun the setupscript after you have runned "source ext/bin/activate"'
     sys.exit(1)
 
 virtualenv = doVirtualEnv()
 print 'Will try to install all the requirements inside our virtualenv'
+# This does not work as expected... :/
 subprocess.call(['pip', 'install', '-E', virtualenv, '--requirement', os.path.join(project_path, 'setup/requirements.txt')])
