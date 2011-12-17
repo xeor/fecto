@@ -6,7 +6,7 @@ from django.conf.urls.defaults import patterns
 
 from apps.serverinfo.api import RootResource, ServerResource, ServerResourceQuery, \
     ServerInlineFormResource, AttributeResource, ServerGetInfoResource, ServerNewResource, \
-    AttributesResource, getIpHelperFormsResource, getNextIpResource, IpResource
+    AttributesResource, getIpHelperFormsResource, getNextIpResource, IpResource, NoteResource
 
 urlpatterns = patterns('',
                        url(r'^$', RootResource.as_view()),
@@ -18,6 +18,7 @@ urlpatterns = patterns('',
                        url(r'^server/inlineForm/', ServerInlineFormResource.as_view()),
                        url(r'^server/attribute/', AttributeResource.as_view()),
                        url(r'^server/ip/', IpResource.as_view()),
+                       url(r'^server/note/', NoteResource.as_view()),
                        url(r'^server/(?P<pk>[^/]+)/$', InstanceModelView.as_view(resource=ServerResource)),
 
                        url(r'^attributes/$', ListOrCreateModelView.as_view(resource=AttributesResource), name='attributes-resource'),

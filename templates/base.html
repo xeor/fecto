@@ -18,7 +18,7 @@
     {% block extracss %}{% if extracss %}{{ extracss }}{% endif %}{% endblock extracss %}
     <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" type="text/css" charset="utf-8" />
     {% endcompress %}    {% compress js %}
-    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}js/jquery-1.7.1.min.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}js/jquery.dropdownPlain.js"></script>     <!-- To get the dropdown to work in IE -->
     {% block extrajs %}{% if extrajs %}{{ extrajs }}{% endif %}{% endblock extrajs %}
     <script type="text/javascript" src="{{ STATIC_URL }}js/main.js"></script>

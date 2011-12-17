@@ -54,6 +54,9 @@ td.geninfo {
     float: left;
     width: 20%;
 }
+textarea.details_notefield {
+    width: 90%;
+}
 
 .details_attributes {
     float: right;

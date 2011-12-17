@@ -234,4 +234,36 @@ $(document).ready(function() {
     });
 
 
-});
+    $('.autosize').growfield({
+        min: 50,
+        max: 200
+    });
+
+    $('.notetype').unbind('change').change(function() {
+        var dataArray = new Array();
+        var id_server = $(this).closest('.detaillist').attr('rel');
+        var notetype = $(this).closest('.notetype').val();
+
+        var noteObj = $(this).siblings('.details_notefield');
+        var note = noteObj.val();
+
+        dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
+        dataArray.push({'name': 'serverid', 'value': id_server});
+        dataArray.push({'name': 'note', 'value': note});
+        dataArray.push({'name': 'notetype', 'value': notetype});
+
+        $.ajax({
+            url: serverinfoRootURL + 'api/server/note/',
+            type: 'GET',
+            dataType: 'json',
+            data: dataArray,
+            success: function(data) {
+                noteObj.val(data.note);
+            }
+        });
+    });
+
+    // Set default
+    $('input:radio[name=notetype][value=public]').click();
+
+}); // End of $(document).ready(

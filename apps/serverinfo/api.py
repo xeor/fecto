@@ -161,3 +161,20 @@ class getNextIpResource(View):
     def get(self, request):
         vlanID = request.GET.get('filter_vlan', None)
         return network_info.NetworkInfo().getNextIP(vlanID)
+
+
+class NoteResource(View):
+    '''
+    Gets or sets the note field in details
+    '''
+
+    #renderers = DEFAULT_RENDERERS + (HTMLRenderer,)
+
+    def get(self, request):
+        serverInlineForm = server_field.ServerInlineForm()
+        print request.GET
+        return {'note': serverInlineForm.getNote(request)}
+
+    def post(self, request):
+        serverInlineForm = server_field.ServerInlineForm()
+        return serverInlineForm.setNote(request)

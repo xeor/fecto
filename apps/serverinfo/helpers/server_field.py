@@ -211,3 +211,24 @@ class ServerInlineForm():
         value = {'row': rowHTML}
 
         return value
+
+    def getNote(self, request):
+        serverID = request.GET.get('serverid', None)
+        noteType = request.GET.get('notetype', None)
+        user = None
+
+        if noteType == 'private':
+            return 'private note'
+
+        if noteType == 'public':
+            return 'public'
+
+        return ''
+
+    def setNote(self, request):
+        serverID = request.POST.get('serverID', None)
+        noteType = request.POST.get('noteType', None)
+        noteContent = request.POST.get('noteContent', None)
+        user = None
+
+        return 'saved note...'

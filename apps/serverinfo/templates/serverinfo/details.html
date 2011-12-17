@@ -1,8 +1,5 @@
 {% load serverinfo_extras %}
 
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/jquery.jeditable.mini.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/js/edit.js"></script>
-
 <div class="detaillist" rel="{{ server.id }}"> <!-- This rel is used for some ajax queries -->
 
 <div class="details_wrapper">
@@ -43,7 +40,10 @@
 
 
   <div class="details_notefield">
-    <textarea>some text</textarea>
+    <span>Note type: </span>
+    <input type="radio" name="notetype" value="public" class="notetype">Public
+    <input type="radio" name="notetype" value="private" class="notetype">Private
+    <textarea class="details_notefield autosize">some text</textarea>
   </div>
 
 </div>
@@ -73,3 +73,7 @@
 </div>
 
 </div>
+
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/jquery.jeditable.mini.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/jquery.growfield.packed-1.1.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/js/edit.js"></script>
