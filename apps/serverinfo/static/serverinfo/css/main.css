@@ -57,6 +57,9 @@ td.geninfo {
 textarea.details_notefield {
     width: 90%;
 }
+.note_save {
+    width: 80%;
+}
 
 .details_attributes {
     float: right;

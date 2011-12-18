@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.core.exceptions import ValidationError
 
+from django.contrib.auth.models import User                                                                                                                                                                                         
+
 from apps.contact.models import Location
 
 from apps.serverinfo.config import statusLevels
@@ -144,10 +146,9 @@ class Server(models.Model):
     def actions(self):
         # FIXME, dynamic
         actions = []
-        actions.append('<a href="/admin/dbcommon/server/' + str(self.id) + '/">edit</a>')
         #actions.append('<a href="http://' + self.name + '-ilo">iLO</a>')
-        #actions.append('<a href="rdp://' + self.name + '">RDP</a>')
-        #actions.append('<a href="ssh://' + self.name + '">SSH</a>')
+        actions.append('<a href="rdp://' + self.name + '">RDP</a>')
+        actions.append('<a href="ssh://' + self.name + '">SSH</a>')
         return actions
 
 
@@ -182,3 +183,13 @@ class AttributeMapping(models.Model):
 
     def __unicode__(self):
         return '%s - %s - %s' % (self.server.name, self.attributeType.name, self.attributeValue.value)
+
+class Note(models.Model):
+    server = models.ForeignKey(Server, db_index=True, related_name='note_server_related')
+    user = models.ForeignKey(User, blank=True, null=True, db_index=True)
+    mode = models.CharField(max_length=1, default=1, db_index=True) # 1=public, 2=private
+    upd_time = models.DateTimeField(auto_now=True)
+    value = models.TextField()
+
+    def __unicode__(self):
+        return '%s - %s' % (self.server.name, self.value,)

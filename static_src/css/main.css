@@ -10,6 +10,8 @@ body {
     background:#efefef;
     border:solid 1px #ccc;
     text-decoration:none;
+    display: inline-block; /* So we can set width */
+    text-align: center;
 }
 
 /*

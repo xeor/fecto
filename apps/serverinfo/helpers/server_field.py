@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.utils.encoding import force_unicode
 
 from apps.serverinfo.views import getAttributeTableHtml, getIpTableHtml
-from apps.serverinfo.models import Server, IP, Vlan, AttributeMapping, AttributeValue, AttributeType
+from apps.serverinfo.models import Server, IP, Vlan, AttributeMapping, AttributeValue, AttributeType, Note
 from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.helpers import server_columns
 
@@ -214,11 +214,25 @@ class ServerInlineForm():
 
     def getNote(self, request):
         serverID = request.GET.get('serverid', None)
-        noteType = request.GET.get('notetype', None)
-        user = None
+        serverObj = get_object_or_404(Server, id=serverID)
+
+        noteType = request.GET.get('notetype', 1)
+
+        if request.user.is_authenticated():
+            userObj = request.user
+        else:
+            userObj = None
 
         if noteType == 'private':
-            return 'private note'
+            if not userObj:
+                return ''
+
+            try:
+                noteObj = Note.objects.get(server=serverObj, user=userObj, mode=2)
+            except Note.DoesNotExist:
+                return ''
+
+            return noteObj.note
 
         if noteType == 'public':
             return 'public'

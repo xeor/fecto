@@ -87,8 +87,6 @@ function get_ip_vlan(thisObj) {
     });
 }
 
-
-
 $.editable.addInputType('checkbox', {
     element : function(settings, original) {
         var input = $('<input type="checkbox">test</input>');
@@ -247,7 +245,6 @@ $(document).ready(function() {
         var noteObj = $(this).siblings('.details_notefield');
         var note = noteObj.val();
 
-        dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
         dataArray.push({'name': 'serverid', 'value': id_server});
         dataArray.push({'name': 'note', 'value': note});
         dataArray.push({'name': 'notetype', 'value': notetype});
@@ -265,5 +262,28 @@ $(document).ready(function() {
 
     // Set default
     $('input:radio[name=notetype][value=public]').click();
+
+    $('.note_save').unbind('click').click(function() {
+        alert('test');
+        var note = $(thisObj).siblings('.details_notefield').val();
+        var note = $(this).siblings('.details_notefield').val();
+        var id_server = $(this).closest('.detaillist').attr('rel');
+        var notetype = $(this).closest('.notetype').val();
+
+        dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
+        dataArray.push({'name': 'serverid', 'value': id_server});
+        dataArray.push({'name': 'note', 'value': note});
+        dataArray.push({'name': 'notetype', 'value': notetype});
+
+        $.ajax({
+            type:'POST',
+    	    url: serverinfoRootURL + 'api/server/note/',
+            data: dataArray,
+    	    success: function(form_data)
+    	    {
+                return 'saved';
+    	    }
+        });
+    });
 
 }); // End of $(document).ready(

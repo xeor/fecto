@@ -115,8 +115,6 @@ function fnCreateSelect(aData) {
 
 $(document).ready(function() {
 
-    //TableToolsInit.sSwfPath = "/media/lib/dataTables-1.7/extras/TableTools/media/swf/ZeroClipboard.swf";
-
     // Start of table stuff
     oTable = $('#serverlist').dataTable( {
 	'aLengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All (dont use if not needed)']],
@@ -179,6 +177,9 @@ $(document).ready(function() {
 	    });
 	},
 	'sDom': 'T<"clear">lfrtip',
+        'oTableTools': {
+            'sSwfPath': '/static/serverinfo/lib/DataTables-1.8.1/extras/TableTools/media/swf/copy_cvs_xls.swf'
+        },
 	'oLanguage': {
 	    'sSearch': 'Search all visible columns:'
 	},
