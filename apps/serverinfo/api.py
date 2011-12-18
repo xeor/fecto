@@ -172,8 +172,7 @@ class NoteResource(View):
 
     def get(self, request):
         serverInlineForm = server_field.ServerInlineForm()
-        print request.GET
-        return {'note': serverInlineForm.getNote(request)}
+        return serverInlineForm.getNote(request)
 
     def post(self, request):
         serverInlineForm = server_field.ServerInlineForm()

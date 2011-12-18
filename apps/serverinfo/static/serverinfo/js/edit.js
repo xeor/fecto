@@ -233,8 +233,8 @@ $(document).ready(function() {
 
 
     $('.autosize').growfield({
-        min: 50,
-        max: 200
+        min: 90,
+        max: 500
     });
 
     $('.notetype').unbind('change').change(function() {
@@ -242,6 +242,7 @@ $(document).ready(function() {
         var id_server = $(this).closest('.detaillist').attr('rel');
         var notetype = $(this).closest('.notetype').val();
 
+        var statusObj = $(this).siblings('.note_status');
         var noteObj = $(this).siblings('.details_notefield');
         var note = noteObj.val();
 
@@ -256,6 +257,8 @@ $(document).ready(function() {
             data: dataArray,
             success: function(data) {
                 noteObj.val(data.note);
+                $(statusObj).show()
+                $(statusObj).html('Changed, ' + data.lastchange);
             }
         });
     });
@@ -264,11 +267,12 @@ $(document).ready(function() {
     $('input:radio[name=notetype][value=public]').click();
 
     $('.note_save').unbind('click').click(function() {
-        alert('test');
-        var note = $(thisObj).siblings('.details_notefield').val();
+        var dataArray = new Array();
+
+        var statusObj = $(this).siblings('.note_status');
         var note = $(this).siblings('.details_notefield').val();
         var id_server = $(this).closest('.detaillist').attr('rel');
-        var notetype = $(this).closest('.notetype').val();
+        var notetype = $(this).siblings('input[name=notetype]:checked').val();
 
         dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
         dataArray.push({'name': 'serverid', 'value': id_server});
@@ -281,9 +285,14 @@ $(document).ready(function() {
             data: dataArray,
     	    success: function(form_data)
     	    {
+                $(statusObj).show()
+                $(statusObj).html('Saved...');
+                $(statusObj).fadeOut('slow');
                 return 'saved';
     	    }
         });
+
+
     });
 
 }); // End of $(document).ready(

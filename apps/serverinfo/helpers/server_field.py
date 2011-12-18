@@ -216,7 +216,7 @@ class ServerInlineForm():
         serverID = request.GET.get('serverid', None)
         serverObj = get_object_or_404(Server, id=serverID)
 
-        noteType = request.GET.get('notetype', 1)
+        noteType = request.GET.get('notetype', 'public')
 
         if request.user.is_authenticated():
             userObj = request.user
@@ -232,17 +232,58 @@ class ServerInlineForm():
             except Note.DoesNotExist:
                 return ''
 
-            return noteObj.note
+            return {'note': noteObj.value, 'lastchange': noteObj.upd_time}
 
         if noteType == 'public':
-            return 'public'
+            try:
+                noteObj = Note.objects.get(server=serverObj, mode=1)
+            except Note.DoesNotExist:
+                return ''
 
-        return ''
+            return {'note': noteObj.value, 'lastchange': noteObj.upd_time}
+
+        return {'note': '', 'lastchange': 'never'}
 
     def setNote(self, request):
-        serverID = request.POST.get('serverID', None)
-        noteType = request.POST.get('noteType', None)
-        noteContent = request.POST.get('noteContent', None)
-        user = None
+        serverID = request.POST.get('serverid', None)
+        serverObj = get_object_or_404(Server, id=serverID)
 
-        return 'saved note...'
+        noteType = request.POST.get('notetype', 'public')
+        noteContent = request.POST.get('note', '')
+
+        print request.POST
+
+        if request.user.is_authenticated():
+            userObj = request.user
+        else:
+            userObj = None
+
+        if noteType == 'private':
+            if not userObj:
+                return False
+
+            try:
+                noteObj = Note.objects.get(server=serverObj, user=userObj, mode=2)
+                print 1
+            except Note.DoesNotExist:
+                print 2
+                noteObj = Note(server=serverObj, user=userObj, mode=2)
+
+            noteObj.value = noteContent
+            noteObj.save()
+
+            return True
+
+        if noteType == 'public':
+            try:
+                noteObj = Note.objects.get(server=serverObj, mode=1)
+            except Note.DoesNotExist:
+                noteObj = Note(server=serverObj, mode=1)
+
+            noteObj.user = userObj
+            noteObj.value = noteContent
+            noteObj.save()
+
+            return True
+
+        return False

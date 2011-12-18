@@ -45,11 +45,10 @@
     {% if user.is_authenticated %}
       <input type="radio" name="notetype" value="private" class="notetype">Private
     {% endif %}
-      <form>
-        <textarea class="details_notefield autosize autosave"></textarea>
 
-      </form>
-        <a href="#" class="button note_save">Save</a>
+      <br /><span>Status: </span><span class="note_status"></span>
+      <textarea class="details_notefield autosize autosave"></textarea>
+      <a href="#" class="button note_save">Save</a>
   </div>
 
 </div>

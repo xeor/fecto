@@ -15,7 +15,8 @@ from django.contrib.auth.models import User
 
 from apps.siteconfig import conf
 from apps.serverinfo import config
-from apps.serverinfo.models import Vlan, Server, IP, AttributeType, AttributeValue, AttributeMapping
+from apps.serverinfo.models import Vlan, Server, IP, AttributeType, \
+    AttributeValue, AttributeMapping, Note
 
 
 class IPModelForm(forms.ModelForm):
@@ -109,3 +110,5 @@ admin.site.register(IP, IPAdmin)
 admin.site.register(AttributeType)
 admin.site.register(AttributeValue)
 admin.site.register(AttributeMapping)
+
+admin.site.register(Note)
