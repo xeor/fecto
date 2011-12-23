@@ -22,7 +22,12 @@
 #   https://github.com/DataTables/DataTables/tree/master/media
 # Proxy option for pip..
 #  pip --proxy=http://proxyserver:8080
-
+#
+# ./manage.py syncdb
+# ./manage.py migrate
+# ./manage.py collectstatic
+# TODO: change config (usedColumns) to newlineArray
+# yum install redis
 
 """
 activate_this = "/.../ext/bin/activate_this.py"

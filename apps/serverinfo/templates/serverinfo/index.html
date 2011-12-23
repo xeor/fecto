@@ -2,9 +2,11 @@
 {% block title %}Serverinfo{% endblock title %}
 
 {% block extracss %}
-<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/media/css/demo_page.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/media/css/demo_table.css" type="text/css" charset="utf-8" />
-<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/extras/TableTools/media/css/TableTools.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/css/demo_page.css" type="text/css" charset="utf-8" />
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/css/demo_table.css" type="text/css" charset="utf-8" />
+<!-- Old?? FIXME
+<link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/css/TableTools.css" type="text/css" charset="utf-8" />
+-->
 
 <link rel="stylesheet" href="{{ STATIC_URL }}serverinfo/css/main.css" type="text/css" charset="utf-8" />
 {% endblock extracss %}
@@ -45,9 +47,12 @@ aoColumns.push(htmlOptions);
 </script>
 
 <script type="text/javascript" src="{{ STATIC_URL }}serverinfo/js/main.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/extras/TableTools/media/js/ZeroClipboard.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/dataTables-1.8.1/extras/TableTools/media/js/TableTools.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/js/jquery.dataTables.min.js"></script>
+
+<!-- Old?? FIXME
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/js/ZeroClipboard.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/js/TableTools.js"></script>
+-->
 
 <script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/jquery.jeditable.mini.js"></script>
 
