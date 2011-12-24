@@ -178,7 +178,7 @@ $(document).ready(function() {
 	},
 	'sDom': 'T<"clear">lfrtip',
         'oTableTools': {
-            'sSwfPath': '/static/serverinfo/lib/DataTables-1.8.1/extras/TableTools/media/swf/copy_cvs_xls.swf'
+            'sSwfPath': '/static/serverinfo/lib/DataTables-1.8.1/media/swf/copy_cvs_xls.swf'
         },
 	'oLanguage': {
 	    'sSearch': 'Search all visible columns:'

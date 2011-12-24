@@ -13,15 +13,15 @@ class Conf:
         dbObj = getattr(models, confType)
 
         try:
-            return True, dbObj.objects.get(name=name, app=app)
+            return dbObj.objects.get(name=name, app=app)
         except dbObj.DoesNotExist:
-            return False, dbObj # We should return an empty dbObj we can populate if we want
+            dbObj = dbObj(name=name, app=app)
+            dbObj.save()
+            return dbObj
 
 
     def add(self, confType, name, appName = '', default = '', permissions = '', description = ''):
-        dbObjExists, dbObj = self._getDbObj(confType, name, appName)
-        if dbObjExists:
-            return False
+        dbObj = self._getDbObj(confType, name, appName)
 
         dbObj(app=appName, name=name, value=default, default=default, permission=permissions, description=description).save()
         return True
@@ -29,10 +29,7 @@ class Conf:
     def get(self, confType, name, app):
         value = cache.get('conf_%s_%s' % (app, name), None)
         if not value:
-            dbObjExists, dbObj = self._getDbObj(confType, name, app)
-
-            if not dbObjExists:
-                return False
+            dbObj = self._getDbObj(confType, name, app)
 
             varType = dbObj.varType
 
@@ -47,10 +44,7 @@ class Conf:
         return value
 
     def updateInfo(self, confType, name, appName = None, default = None, description = None):
-        dbObjExists, dbObj = self._getDbObj(confType, name, appName)
-
-        if not dbObjExists:
-            return False
+        dbObj = self._getDbObj(confType, name, appName)
 
         changes = []
 
