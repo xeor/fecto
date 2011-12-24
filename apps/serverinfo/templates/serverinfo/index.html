@@ -103,8 +103,8 @@ aoColumns.push(htmlOptions);
 	  {% if c.noFilter %}
 	    <th></th>
 	  {% else %}
-	    <th><input type="text" class="search_init" value=""
-	  id="columnfilter_{{ c.id }}" placeholder="{{ c.name }}"></th>
+            <!-- FIXME, option to use select here.. Eg for status -->
+	    <th><input type="text" class="search_init" value="" id="columnfilter_{{ c.id }}" placeholder="{{ c.name }}"></th>
 	  {% endif %}
 	{% endfor %}
       </tr>
