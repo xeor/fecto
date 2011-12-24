@@ -231,12 +231,6 @@ $(document).ready(function() {
         return false;
     });
 
-
-    $('.autosize').growfield({
-        min: 90,
-        max: 500
-    });
-
     $('.notetype').unbind('change').change(function() {
         var dataArray = new Array();
         var id_server = $(this).closest('.detaillist').attr('rel');
@@ -294,5 +288,12 @@ $(document).ready(function() {
 
 
     });
+
+    // FIXME: Doesnt autogrow at start..
+    $('.autosize').growfield({
+        min: 50,
+        max: 400
+    });
+
 
 }); // End of $(document).ready(

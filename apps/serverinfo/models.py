@@ -73,7 +73,8 @@ class IP(models.Model):
     vlan = models.ForeignKey(Vlan, blank=True, null=True) # Autopopulated field
 
     def __unicode__(self):
-        return u'%s (%s)' % (self.ip, self.vlan)
+        return self.ip
+        #return u'%s (%s)' % (self.ip, self.vlan)
 
     class Meta:
         ordering = ['vlan', 'ip']

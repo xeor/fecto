@@ -26,16 +26,17 @@ class ServerQuery():
         self.serverColumns = server_columns.ServerColumns()
 
     def applyColumnFilter(self, serversObj, columnFilter, fieldName):
+        #filterPath = self.serverColumns.columnsDict[columnFilter].get('filter_path', str(columnFilter) + '__icontains')
+
         try:
             if columnFilter == 'NONE':
-                # FIXME, check if 'NONE' really works as expected
-
                 # We need to use a variable in our filter query, therefor we need to do the **{fieldName: ...} hack.
                 # Normal is .filter('system__name__icontains=something')
                 serversObj = serversObj.filter(**{str(fieldName): None})
             else:
-                serversObj = serversObj.filter(**{str(fieldName) + '__icontains': columnFilter})
-        except:
+                filterPath = self.serverColumns.columnsDict[fieldName].get('filter_path', str(fieldName) + '__icontains')
+                serversObj = serversObj.filter(**{filterPath: columnFilter})
+        except KeyError:
             pass
 
         return serversObj
@@ -86,7 +87,6 @@ class ServerQuery():
 
         self.columnFiltersToUse = []
         [ self.columnFiltersToUse.append(columnFilterName) for columnFilterName in conf_columnFilters if columnFilterName in columnsVisible ]
-
 
         columnFilters = {}
         nonSearchable = []
@@ -372,7 +372,8 @@ class ServerQuery():
 
         # List used by the "freeze list" link, which makes us able to
         # freeze the current displayed list of servers, and filter on
-        # that list as well..
+        # that list as well.. This is placed here because we only want
+        # a freeze list of whats displayed. Not everything that matces
         serversDict['serversCSV'] = ','.join( [ str(s.id) for s in serversObj ] )
 
         # The api framework will take care of converting this into json
