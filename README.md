@@ -82,7 +82,8 @@ FAQ
 ---
 
 * Why the name "Fecto", and what does it mean?
-** Fecto stands for (From Eternal Chaos To Order).
+  * Fecto stands for (From Eternal Chaos To Order).
+
 * You didnt say why...
-** You have probably worked at, atleast one company that uses excel to keep track of servers/ip's.. Hence, the chaos. Fecto will make order :)
-** Not only for serverinfo tough.. Other small "apps" will be created in this project to create even more order.
+  * You have probably worked at, atleast one company that uses excel to keep track of servers/ip's.. Hence, the chaos. Fecto will make order :)
+  * Not only for serverinfo tough.. Other small "apps" will be created in this project to create even more order.
