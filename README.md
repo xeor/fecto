@@ -41,7 +41,7 @@ Features (to come)
 * Lots more!
 
 
-Feature apps
+Future apps
 ------------
 This application will have more sub-apps than just server information, but serverinfo will be
 in focus and will be made first. Later sub-apps that will probably come is:

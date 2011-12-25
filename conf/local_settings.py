@@ -223,6 +223,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+
+        # Used by django-extension and runserver_plus
+        'werkzeug': {
+            'handlers': ['console'],
+        },
     }
 }
 
