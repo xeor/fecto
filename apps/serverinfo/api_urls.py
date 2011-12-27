@@ -6,7 +6,8 @@ from django.conf.urls.defaults import patterns
 
 from apps.serverinfo.api import RootResource, ServerResource, ServerResourceQuery, \
     ServerInlineFormResource, AttributeResource, ServerGetInfoResource, ServerNewResource, \
-    AttributesResource, getIpHelperFormsResource, getNextIpResource, IpResource, NoteResource
+    AttributesResource, getIpHelperFormsResource, getNextIpResource, IpResource, NoteResource, \
+    filterAjaxResource
 
 urlpatterns = patterns('',
                        url(r'^$', RootResource.as_view()),
@@ -25,6 +26,7 @@ urlpatterns = patterns('',
                        url(r'^attributes/(?P<pk>[^/]+)/$', InstanceModelView.as_view(resource=AttributesResource)),
                        url(r'^getIpHelperForms/$', getIpHelperFormsResource.as_view()),
                        url(r'^getIpHelperNext/$', getNextIpResource.as_view()),
+                       url(r'^filter/(?P<filterName>[a-z0-9_-]+)/', filterAjaxResource.as_view()),
                        )
 
 # Static views served by the rest framework itself

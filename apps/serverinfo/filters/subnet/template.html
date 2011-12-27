@@ -14,7 +14,7 @@
   $.ajax({
   async: false,
   dataType: "json",
-  url: "json/subnet/getall",
+  url: "api/filter/subnet/getall",
   success: function(j){
   for (var i = 0; i < j.length; i++) {
 		      options += '<option value="' + j[i].optionValue + '">' + j[i].optionDisplay + '</option>';
@@ -37,7 +37,7 @@
 
    $("select#ipLoc").bind('change keyup keydown', function(){
      $("select#subnet").html('');
-     $.getJSON("json/subnet/get",{id: $(this).val(), type: 'subnet'}, function(j){
+     $.getJSON("api/filter/subnet/get",{id: $(this).val(), type: 'subnet'}, function(j){
        var options = '';
        options += '<option value=""></option>';
        for (var i = 0; i < j.length; i++) {

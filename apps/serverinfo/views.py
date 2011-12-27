@@ -18,16 +18,13 @@ from apps.siteconfig.conf import Conf
 from apps.serverinfo.models import Server, AttributeMapping, IP
 from apps.serverinfo import config
 from apps.serverinfo import filters
-from apps.serverinfo.helpers import server_columns, form_dynamics
+from apps.serverinfo.helpers import server_columns, form_dynamics, server_filters
 
 from forms import AddAttributeForm, AddIPForm
 
 # We need this to be included to get the filtering templates to work
 filter_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'filters'))
 settings.TEMPLATE_DIRS = settings.TEMPLATE_DIRS + (filter_path,)
-
-# Global variables
-loadedFilters = {}
 
 # Special simplejson encoder to support ugettext_lazy objects..
 # See https://docs.djangoproject.com/en/dev/topics/serialization/#id2
@@ -115,61 +112,10 @@ def details(request, serverID, naming='id'):
             }, context_instance=RequestContext(request))
 
 
-def getFilterObj(filterEntry):
-    filterID = filterEntry['id']
-    if not re.match(r'^[a-z]+$', filterID):
-        return False
-
-    if loadedFilters.get(filterID):
-        return loadedFilters[filterID]
-
-    moduleName = 'apps.serverinfo.filters.' + filterID
-    __import__(moduleName)
-
-    try:
-        filterFunction = getattr(sys.modules[moduleName], 'filter')
-    except:
-        return False
-
-    filterOutput = {
-        'function': sys.modules[moduleName],
-        'filter': filterFunction,
-        'id': filterID,
-        'name': filterEntry['name'],
-        'config': filterEntry,
-        'template': '%s/template.html' % (filterEntry['id'],),
-        }
-
-    loadedFilters[filterID] = filterOutput
-
-    return filterOutput
-
-
-# FIXME: Take away and take away comment on the detail() view
-# function, which adds the cookie.. Most is ready for csrf on js side
-@csrf_exempt
-def json(request, query_string):
-    json_data = {}
-
-    # Populate loadedFilters if its not already loaded
-    [ getFilterObj(f) for f in config.filters ]
-
-    # Json requests by filter plugins, a catch all at the end...
-    requestedFilter = query_string.split('/')[0]
-    if requestedFilter in loadedFilters:
-        try:
-            jsonFunction = getattr(loadedFilters[requestedFilter]['function'], 'json')
-        except:
-            return HttpResponseBadRequest()
-
-        json_data = jsonFunction(request)
-        return HttpResponse(simplejson.dumps(json_data))
-
-    return HttpResponseBadRequest()
-
 def index(request):
     c = Conf()
     serverColumns = server_columns.ServerColumns()
+    serverFilters = server_filters.ServerFilters()
 
     columns = c.get('Text', 'usedColumns', 'apps.serverinfo') # was attributes =
 
@@ -185,7 +131,7 @@ def index(request):
 
     filters = []
     for f in config.filters:
-        filterObj = getFilterObj(f)
+        filterObj = serverFilters.getFilterObj(f)
         if not filterObj: continue
         filters.append(filterObj)
 

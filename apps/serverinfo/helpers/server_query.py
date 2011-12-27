@@ -6,7 +6,7 @@ from django.db.models import Q
 from apps.siteconfig.conf import Conf
 from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.models import Server, AttributeMapping
-from apps.serverinfo.helpers import server_columns
+from apps.serverinfo.helpers import server_columns, server_filters
 
 class ServerQuery():
     totalCount = 0 # Populated by handle()
@@ -18,7 +18,7 @@ class ServerQuery():
     pagingStart = None # Populated by handleSorting()
     pagingCount = None # Populated by handleSorting()
 
-    loadedFilters = {} # Populated by getFilterObj()
+    #loadedFilters = {} # Populated by getFilterObj()
 
     attributesObj = None # Populated in generateDict(), used in generateDataTablesEntry()
 
@@ -137,42 +137,13 @@ class ServerQuery():
         return serversObj.filter(q)
 
 
-    def getFilterObj(self, filterEntry):
-        filterID = filterEntry['id']
-        if not re.match(r'^[a-z]+$', filterID):
-            return False
-
-        if self.loadedFilters.get(filterID):
-            return self.loadedFilters[filterID]
-
-        moduleName = 'apps.serverinfo.filters.' + filterID
-        __import__(moduleName)
-
-        try:
-            filterFunction = getattr(sys.modules[moduleName], 'filter')
-        except:
-            return False
-
-        filterOutput = {
-            'function': sys.modules[moduleName],
-            'filter': filterFunction,
-            'id': filterID,
-            'name': filterEntry['name'],
-            'config': filterEntry,
-            'template': '%s/template.html' % (filterEntry['id'],),
-            }
-
-        self.loadedFilters[filterID] = filterOutput
-
-        return filterOutput
-
-
     def handleCustomFilters(self, serversObj):
         '''
         Run the trough every custom filters and apply their own filter functions to the serversObj
         '''
+        serverFilters = server_filters.ServerFilters()
         for customFilter in serverinfoConfig.filters:
-            filterObj = self.getFilterObj(customFilter)
+            filterObj = serverFilters.getFilterObj(customFilter)
             if not filterObj: continue
             filterID = filterObj['id']
 
@@ -185,7 +156,7 @@ class ServerQuery():
             if not filterData:
                 continue
 
-            serversObj = filterObj['filter'](filterData, serverListObj)
+            serversObj = filterObj['filter'](filterData, serversObj)
 
         return serversObj
 

@@ -68,7 +68,7 @@ aoColumns.push(htmlOptions);
   |
   <a href="#" id="admLink_newserv">New server</a> |
 
-  <!-- Populated using javascript ( we need the list first :) ) -->
+  <!-- Freeze list is populated using javascript ( we need the list first :) ) -->
   <a href="#" id="admLink_frozenlist">Freeze list</a> (
   <a href="{% url serverinfo-root %}" id="admLink_unfreeze">unfreeze</a>) |
   <br />
@@ -109,7 +109,19 @@ aoColumns.push(htmlOptions);
 	    <th></th>
 	  {% else %}
             <!-- FIXME, option to use select here.. Eg for status -->
-	    <th><input type="text" class="search_init" value="" id="columnfilter_{{ c.id }}" placeholder="{{ c.name }}"></th>
+	    <th>
+              {% if c.selectFilter %}
+                <select class="search_init" value="" id="columnfilter_{{ c.id }}">
+                  <option value=""></option>
+                  {% for optval,optname in c.selectFilter.items %}
+                  <option value="{{ optval }}">{{ optname }}</option>
+                  {% endfor %}
+                </select>
+              {% else %}
+                <input type="text" class="search_init" value=""
+                id="columnfilter_{{ c.id }}" placeholder="{{ c.name }}">
+              {% endif %}
+            </th>
 	  {% endif %}
 	{% endfor %}
       </tr>

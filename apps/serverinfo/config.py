@@ -1,4 +1,6 @@
+from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_unicode
 
 # FIXME, handle separators in serverlist
 # FIXME, move all this columns stuff out of config.py!
@@ -17,6 +19,7 @@ statusLevels = (
     ('6', _('6 - Hidden')),
     )
 
+statusLevelsDict = SortedDict(map(lambda x: (x[0], force_unicode(x[1])), statusLevels))
 
 # Configuration which are dynamicly gathered and made available in the
 # admin, DONT change this without knowing what you are doing.. Its

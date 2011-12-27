@@ -1,4 +1,5 @@
 from apps.serverinfo.models import AttributeType
+from apps.serverinfo.config import statusLevelsDict
 
 class ServerColumns():
     columns = []
@@ -34,6 +35,7 @@ class ServerColumns():
             # noDB            Datafield which does not come directly from the database
             # filter_path     Filter path when user is searching/filtering
             # separator       Separator to use when several items are returned
+            # selectFilter    Use an selectbox instead of text when filtering. (value is a dict)
             {'name': 'ID', 'id': 'id', 'defaultHidden': True, 'htmlOptions': '{"sWidth": "1em"}'},
             {'name': 'Name', 'id': 'name', 'editable':True, 'htmlOptions': '{"sWidth": "15em"}'},
             {'name': 'Function', 'id': 'function', 'editable': True},
@@ -41,7 +43,7 @@ class ServerColumns():
             {'name': 'Note', 'id': 'note', 'editable': True},
             {'name': 'Virtual', 'id': 'virtual', 'editable': True},
             {'name': 'IP', 'id': 'ip', 'noSort': True, 'separator': ', ', 'filter_path': 'ip__ip__contains', 'editable': True},
-            {'name': 'Status', 'id': 'status', 'editable': True},
+            {'name': 'Status', 'id': 'status', 'editable': True, 'selectFilter': statusLevelsDict},
             {'name': 'Registered', 'id': 'reg_time', 'defaultHidden': True},
             {'name': 'Updated', 'id': 'upd_time'},
             {'name': 'Actions', 'id': 'actions', 'noFilter': True, 'noDB': True, 'separator': ' | '},

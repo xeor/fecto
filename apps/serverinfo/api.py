@@ -4,9 +4,10 @@ from djangorestframework.resources import ModelResource
 from djangorestframework.views import View
 from djangorestframework.renderers import BaseRenderer, DEFAULT_RENDERERS
 
+from apps.serverinfo import config
 from apps.serverinfo.models import Server, AttributeMapping
 from apps.serverinfo.views import getIpInputHtml
-from apps.serverinfo.helpers import server_query, server_field, network_info
+from apps.serverinfo.helpers import server_query, server_field, network_info, server_filters
 
 class HTMLRenderer(BaseRenderer):
     """
@@ -177,3 +178,21 @@ class NoteResource(View):
     def post(self, request):
         serverInlineForm = server_field.ServerInlineForm()
         return serverInlineForm.setNote(request)
+
+class filterAjaxResource(View):
+    '''
+    Handles ajax calls that custom filter might want to do with themself
+    using the ajax() function
+    '''
+
+    def get(self, request, filterName):
+        serverFilters = server_filters.ServerFilters()
+
+        [ serverFilters.getFilterObj(f) for f in config.filters ]
+        ajaxFunction = getattr(serverFilters.loadedFilters[filterName]['function'], 'ajax')
+        data = ajaxFunction(request)
+
+        from django.utils.translation import ugettext_lazy as _
+        data = {'test': _('testing')}
+        #print 'ajax', data
+        return data

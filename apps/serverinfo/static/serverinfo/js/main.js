@@ -25,6 +25,23 @@ function dump(arr, level) {
     return dumped_text;
 }
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we
+            // want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 // From http://stackoverflow.com/questions/439463/how-to-get-get-and-post-variables-with-jquery
 function getQueryParams(qs) {
     qs = qs.split("+").join(" ");
@@ -201,6 +218,9 @@ $(document).ready(function() {
 	/* Filter on the column (the index) of this element */
 	oTable.fnFilter( this.value, $("tfoot input").index(this) );
     });
+    $('tfoot select').change( function () {
+	oTable.fnFilter( this.value, $("tfoot select").index(this) );
+    });
 
     // New server button
     $('#admLink_newserv').click(function() {
@@ -214,7 +234,8 @@ $(document).ready(function() {
             url: serverinfoRootURL + 'api/server/new/',
             data: dataArray,
             success: function(serverName){
-                $('#messagebox').html('Locked on new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');
+                // This span (.newserver) id is important, dont delete it..
+                $('#messagebox').html('Created new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');
                 $('#messagebox').addClass('info');
                 $('#messagebox').show();
                 oTable.fnDraw();
