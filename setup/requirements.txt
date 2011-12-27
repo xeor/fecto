@@ -2,6 +2,7 @@ Django
 South
 simplejson
 django-sentry
+sphinx
 
 # Dont know if we need this one yet
 django-picklefield

@@ -3,3 +3,4 @@
 *.db
 /static/
 /ext/
+/docs/_build
