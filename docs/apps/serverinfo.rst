@@ -1,3 +1,6 @@
+Serverinfo
+==========
+
 Features
 --------
 
