@@ -82,11 +82,11 @@ function fnOpenClose(oSettings) {
 		/* This row is already open - close it */
 		this.src = '/static/serverinfo/img/details_open.png';
 		oTable.fnClose( nTr );
+                oTable.fnDraw();
 	    } else {
 		/* Open this row */
 		this.src = '/static/serverinfo/img/details_close.png';
 		oTable.fnOpen( nTr, fnFormatDetails(nTr,this), 'serv_details' );
-		oTable.fnDraw(); // FIXME, Need to refresh the row
 	    }
 	});
     });
@@ -110,7 +110,6 @@ function fnResetAllFilters() {
 	oSettings.aoPreSearchCols[ iCol ].sSearch = '';
     }
     $('.dataTables_filter input').val('').keyup();
-    $('#ipLoc').val('').keyup();
 
     $('tfoot input').each( function (i) {
 	this.value = '';
@@ -130,6 +129,55 @@ function fnCreateSelect(aData) {
 }
 
 
+// In case the input form is of type "location", we should get form details..
+// 'get_ip_' + type...
+function get_ip_location(thisObj) {
+    var id_server = $(thisObj).closest('.detaillist').attr('rel');
+    if (id_server == undefined) {
+        // We are using the function outside the normal server details
+        // frame. Example for use in the subnet filter, custom filter.
+        // The serverid of 000 will never happend, but is used here
+        // because we need to know which id to replace below.
+        // Therefor, always use #net_form_helpers-standalone when using this
+        // in "standalone" modus
+        id_server = 'standalone';
+    }
+    var dataArray = $(thisObj).closest('form').serializeArray();
+
+    $.ajax({
+        type:"GET",
+    	url: serverinfoRootURL + 'api/getIpHelperForms/?_accept=text/raw',
+    	cache: false,
+        data: dataArray,
+    	success: function(form_data)
+    	{
+            $('#net_form_helpers-' + id_server).html(form_data);
+            return true;
+    	}
+    });
+}
+
+// In case the type is "vlan", we are ready to get and populate the
+// next IP address.. 'get_ip_' + type...
+function get_ip_vlan(thisObj) {
+    var id_server = $(thisObj).closest('.detaillist').attr('rel');
+    var dataArray = $(thisObj).closest('form').serializeArray();
+
+    $.ajax({
+        type:"GET",
+    	url: serverinfoRootURL + 'api/getIpHelperNext/?_accept=text/raw',
+    	cache: false,
+        data: dataArray,
+    	success: function(form_data)
+    	{
+            // input.ip on the same level as #net_form_....
+            $('#net_form_helpers-' + id_server + ' ~ input.ip').val(form_data);
+            return true;
+    	}
+    });
+}
+
+
 $(document).ready(function() {
 
     // Start of table stuff
@@ -143,13 +191,9 @@ $(document).ready(function() {
 	'sAjaxSource': serverinfoRootURL + 'api/server/datatables/',
 	'fnServerData': function(sSource, aoData, fnCallback ) {
 
-	    for (var i = 0, len = filters.length; i<len; ++i) {
-		val = $('#filter_' + filters[i] + '_value').val();
-		if (typeof val === 'undefined') {
-		    val = '';
-		}
-		aoData.push({'name': 'filter_' + filters[i] + '_value', 'value': val});
-	    }
+            $('.filter_value').each(function(index) {
+		aoData.push({'name': this.id, 'value': $(this).val()});
+            });
 
 	    for (var i = 0, len = columns.length; i<len; ++i) {
 		val = $('#columnfilter_' + columns[i]).val();
@@ -259,16 +303,16 @@ $(document).ready(function() {
     });
 
     // Filter options
-    $('.filterOption').each( function () {
-	$('#table_' + this.id).hide()
+    $('.filterJail').each( function () {
+        $(this).hide()
     });
 
-    $('.filterOption').toggle(function() {
+    $('.filterToggle').toggle(function() {
 	$(this).css({'font-weight': 'bold'});
-	$('#table_' + this.id).show();
+	$('#jail_' + this.id).show();
     }, function() {
 	$(this).css({'font-weight': ''});
-	$('#table_' + this.id).hide();
+	$('#jail_' + this.id).hide();
 	$('#' + this.id + '_value').val('');
 	oTable.fnDraw();
     });

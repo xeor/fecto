@@ -192,7 +192,4 @@ class filterAjaxResource(View):
         ajaxFunction = getattr(serverFilters.loadedFilters[filterName]['function'], 'ajax')
         data = ajaxFunction(request)
 
-        from django.utils.translation import ugettext_lazy as _
-        data = {'test': _('testing')}
-        #print 'ajax', data
         return data

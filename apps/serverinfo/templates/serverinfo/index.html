@@ -83,14 +83,19 @@ aoColumns.push(htmlOptions);
   <b>Filter selectors: </b>
   |
   {% for f in filters %}
-    <a href="#" class="filterOption" id="filter_{{ f.id }}">{{ f.name }}</a> |
+    <a href="#" class="filterToggle" id="filter_{{ f.id }}">{{ f.name }}</a> |
   {% endfor %}
 
-  <table id="extraOpts">
+  <div id="customFilters">
     {% for f in filters %}
-      {% include f.template %}
+      <div class="filterJail" id="jail_filter_{{ f.id }}">
+        <fieldset class="filter_list">
+          <legend class="filter_list">{{ f.id }}</legend>
+          {% include f.template with data=f.templateDict %}
+        </fieldset>
+      </div>
     {% endfor %}
-  </table>
+  </div>
 
   <table id="serverlist">
     <thead>
@@ -108,7 +113,6 @@ aoColumns.push(htmlOptions);
 	  {% if c.noFilter %}
 	    <th></th>
 	  {% else %}
-            <!-- FIXME, option to use select here.. Eg for status -->
 	    <th>
               {% if c.selectFilter %}
                 <select class="search_init" value="" id="columnfilter_{{ c.id }}">

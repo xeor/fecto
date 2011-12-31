@@ -144,19 +144,12 @@ class ServerQuery():
         serverFilters = server_filters.ServerFilters()
         for customFilter in serverinfoConfig.filters:
             filterObj = serverFilters.getFilterObj(customFilter)
-            if not filterObj: continue
+            if filterObj == False: continue
             filterID = filterObj['id']
 
-            filterData = {}
-            for key in self.keys.items():
-                if (key[0].startswith('filter_%s_' % (filterID,))) and (key[1] != ''):
-                    filterName = re.sub(r'^filter_%s_' % (filterID,), '', key[0])
-                    filterData[filterName] = key[1]
-
-            if not filterData:
-                continue
-
-            serversObj = filterObj['filter'](filterData, serversObj)
+            filteredData = filterObj['filter'](self.keys, serversObj)
+            if not filteredData == False:
+                serversObj = filteredData
 
         return serversObj
 

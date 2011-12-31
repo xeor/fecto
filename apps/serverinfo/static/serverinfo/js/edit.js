@@ -48,45 +48,6 @@ function add_ip(thisObj, tableObj) {
 }
 
 
-// In case the input form is of type "location", we should get form details..
-// 'get_ip_' + type...
-function get_ip_location(thisObj) {
-    var id_server=$(thisObj).closest('.detaillist').attr('rel');
-    var dataArray = $(thisObj).closest('form').serializeArray();
-
-    $.ajax({
-        type:"GET",
-    	url: serverinfoRootURL + 'api/getIpHelperForms/?_accept=text/raw',
-    	cache: false,
-        data: dataArray,
-    	success: function(form_data)
-    	{
-            $('#net_form_helpers-' + id_server).html(form_data);
-            return true;
-    	}
-    });
-}
-
-// In case the type is "vlan", we are ready to get and populate the
-// next IP address.. 'get_ip_' + type...
-function get_ip_vlan(thisObj) {
-    var id_server=$(thisObj).closest('.detaillist').attr('rel');
-    var dataArray = $(thisObj).closest('form').serializeArray();
-
-    $.ajax({
-        type:"GET",
-    	url: serverinfoRootURL + 'api/getIpHelperNext/?_accept=text/raw',
-    	cache: false,
-        data: dataArray,
-    	success: function(form_data)
-    	{
-            // input.ip on the same level as #net_form_....
-            $('#net_form_helpers-' + id_server + ' ~ input.ip').val(form_data);
-            return true;
-    	}
-    });
-}
-
 $.editable.addInputType('checkbox', {
     element : function(settings, original) {
         var input = $('<input type="checkbox">test</input>');

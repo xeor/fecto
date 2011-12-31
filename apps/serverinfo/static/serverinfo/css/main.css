@@ -23,24 +23,6 @@ th.small_1 {
     width: 1%;
 }
 
-fieldset.details_list {
-    #padding: 5px;
-    #border:2px solid aaf;
-    #margin: 20px;
-    #width: 100%;
-}
-
-legend.details_list {
-    #padding: 0.2em 0.5em;
-    #border:1px solid green;
-    #color:green;
-    #font-size:90%;
-    #text-align:right;
-    #margin: 5px auto;
-    font-weight: bold;
-}
-
-
 .details_geninfo {
     float: left;
     width: 30%;
@@ -75,6 +57,18 @@ fieldset.details_list {
     border-right-style: hidden;
 }
 legend.details_list {
+    font-size: 90%;
+    border: 1px solid gray;
+}
+
+fieldset.filter_list {
+    border: 1px solid gray;
+    padding: 6px;
+    border-bottom-style: hidden;
+    border-right-style: hidden;
+    width: 30%;
+}
+legend.filter_list {
     font-size: 90%;
     border: 1px solid gray;
 }

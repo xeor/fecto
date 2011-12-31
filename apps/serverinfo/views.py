@@ -131,7 +131,7 @@ def index(request):
 
     filters = []
     for f in config.filters:
-        filterObj = serverFilters.getFilterObj(f)
+        filterObj = serverFilters.getFilterObj(f, request=request)
         if not filterObj: continue
         filters.append(filterObj)
 

@@ -12,6 +12,6 @@ class NetworkInfo():
         if type(vlanID) == int:
             vlanObj = get_object_or_404(Vlan, id=vlanID)
         else:
-            vlanObj = vlan
+            return 'IP for which vlan?'
 
         return vlanObj.getNextAvailableIP()
