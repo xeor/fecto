@@ -136,6 +136,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django_hosts.middleware.HostsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+    'reversion.middleware.RevisionMiddleware', # After TransactionMiddleware
 )
 
 ROOT_URLCONF = 'fecto.urls'

@@ -82,7 +82,12 @@ function fnOpenClose(oSettings) {
 		/* This row is already open - close it */
 		this.src = '/static/serverinfo/img/details_open.png';
 		oTable.fnClose( nTr );
-                oTable.fnDraw();
+
+                // If we do an fnDraw() here, it will refresh the
+                // table the correct way, but it will also close every
+                // open details. FIXME, check if any details is open,
+                // if there is, dont run fnDraw...
+                //oTable.fnDraw(false);
 	    } else {
 		/* Open this row */
 		this.src = '/static/serverinfo/img/details_close.png';
@@ -246,9 +251,8 @@ $(document).ready(function() {
 	},
 	'aoColumns': aoColumns,
 	'aaSorting': [[1, 'asc']],
-	'fnDrawCallback': fnOpenClose
+	'fnDrawCallback': fnOpenClose,
     }); // End of oTable = ...
-
 
     $('#serverlist_filter input').select()
 
@@ -335,30 +339,6 @@ $(document).ready(function() {
 	$(this).css({'font-weight': ''});
 	$('#table_' + this.id).hide();
     });
-
-    $('select#lastAlive').bind('change keyup keydown', function(){
-        oTable.fnDraw();
-    })
-
-    $('select#lastAliveWay').bind('change keyup keydown', function(){
-        oTable.fnDraw();
-    })
-
-    $('select#lastMonitor').bind('change keyup keydown', function(){
-        oTable.fnDraw();
-    })
-
-    $('select#lastMonitorWay').bind('change keyup keydown', function(){
-        oTable.fnDraw();
-    })
-
-    $('select#lastWinUpd').bind('change keyup keydown', function(){
-        oTable.fnDraw();
-    })
-
-    $('select#lastWinUpdWay').bind('change keyup keydown', function(){
-        oTable.fnDraw();
-    })
 
     $('#special_filter_apply').click(function(){
 	oTable.fnDraw();

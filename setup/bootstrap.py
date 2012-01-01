@@ -28,6 +28,7 @@
 # ./manage.py collectstatic
 # TODO: change config (usedColumns) to newlineArray
 # yum install redis
+# ./manage.py migrate reversion
 
 """
 activate_this = "/.../ext/bin/activate_this.py"

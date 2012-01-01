@@ -133,8 +133,8 @@ class Server(models.Model):
     ip = models.ManyToManyField(IP, blank=True, null=True)
     status = models.CharField('Status', blank=True, null=True, max_length=1, choices=statusLevels, default=2)
 
-    reg_time = models.DateTimeField('Registered', blank=True, null=True)
-    upd_time = models.DateTimeField('Updated', blank=True, null=True)
+    reg_time = models.DateTimeField('Registered', blank=True, null=True, auto_now_add=True)
+    upd_time = models.DateTimeField('Updated', blank=True, null=True, auto_now=True)
 
     def __unicode__(self):
         return self.name
