@@ -161,6 +161,10 @@ class getNextIpResource(View):
 
     def get(self, request):
         vlanID = request.GET.get('filter_vlan', None)
+        if not vlanID:
+            # Fallback in case vlan is not set (happens if eg location is not set)
+            vlanID = request.GET.get('filter1', None)
+
         return network_info.NetworkInfo().getNextIP(vlanID)
 
 

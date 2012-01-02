@@ -6,12 +6,12 @@ class NetworkInfo():
     def getNextIP(self, vlanID):
         try:
             vlanID = int(vlanID)
-        except ValueError:
-            pass
+        except ValueError, TypeError:
+            vlanID = None
 
         if type(vlanID) == int:
             vlanObj = get_object_or_404(Vlan, id=vlanID)
         else:
-            return 'IP for which vlan?'
+            return ''
 
         return vlanObj.getNextAvailableIP()
