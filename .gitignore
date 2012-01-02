@@ -1,6 +1,7 @@
 *.pyc
-*.py~
 *.db
+*.*~
+*\#
 /static/
 /ext/
 /docs/_build
