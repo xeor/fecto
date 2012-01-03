@@ -65,6 +65,7 @@ $(document).ready(function() {
         cancel: 'Cancel',
         submit: 'OK',
         style: 'display: inline',
+	cssclass: 'autosize',
     });
 
     $(".edit-textarea").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
@@ -250,10 +251,11 @@ $(document).ready(function() {
 
     });
 
-    // FIXME: Doesnt autogrow at start..
-    $('.autosize').growfield({
-        min: 50,
-        max: 400
+    $('.autosize').autoResize({
+	maxHeight: 200,
+	minHeight: 60,
+	extraSpace: 16,
+	animate: false,
     });
 
 
