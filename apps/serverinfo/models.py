@@ -90,7 +90,7 @@ class IP(models.Model):
                 break
 
     def getGateway(self):
-        # Returns firs ip in the network.. FIXME, configurable?
+        # Returns firs ip in the network..
         if self.vlan:
             ipObj = ipaddr.IPv4Network(self.vlan.network)
             return ipObj.iterhosts().next()

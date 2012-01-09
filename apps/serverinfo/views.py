@@ -1,23 +1,15 @@
-import simplejson
-import re
-import datetime
-import sys
 import os
 
-from django.views.decorators.csrf import csrf_exempt
-
 #from django.views.decorators.csrf import ensure_csrf_cookie
-from django.utils.translation import ugettext_lazy as _
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.conf import settings
+from django.http import Http404
 
 from apps.siteconfig.conf import Conf
 from apps.serverinfo.models import Server, AttributeMapping, IP
 from apps.serverinfo import config
-from apps.serverinfo import filters
 from apps.serverinfo.helpers import server_columns, form_dynamics, server_filters
 
 from forms import AddAttributeForm, AddIPForm
@@ -28,13 +20,6 @@ settings.TEMPLATE_DIRS = settings.TEMPLATE_DIRS + (filter_path,)
 
 # Special simplejson encoder to support ugettext_lazy objects..
 # See https://docs.djangoproject.com/en/dev/topics/serialization/#id2
-from django.utils.functional import Promise
-from django.utils.encoding import force_unicode
-class LazyEncoder(simplejson.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, Promise):
-            return force_unicode(obj)
-        return super(LazyEncoder, self).default(obj)
 
 def getAttributeTableHtml(serverObj):
     attributesObj = AttributeMapping.objects.filter(server=serverObj).order_by('attributeType__name')
@@ -43,11 +28,11 @@ def getAttributeTableHtml(serverObj):
     if count != 0:
         html = render_to_string(
             'serverinfo/attributes_html.html',
-            {
+                {
                 'attributes': attributesObj,
                 'server': serverObj,
                 }
-            )
+        )
     else:
         html = None
 
@@ -57,35 +42,35 @@ def getIpTableHtml(serverObj):
     networkObj = IP.objects.filter(server=serverObj)
     count = networkObj.count()
 
-    print 'so',serverObj
+    print 'so', serverObj
     if count != 0:
         html = render_to_string(
             'serverinfo/network_html.html',
-            {
+                {
                 'ips': networkObj,
                 'server': serverObj,
                 }
-            )
+        )
     else:
         html = None
 
     return html
 
 def getIpInputHtml(request):
-    '''
+    """
     This will be appended to the current form depending on
     what the use requests in the first inputfield
-    '''
+    """
     formDynamicsObj = form_dynamics.IPFormDynamics()
 
     inputs = formDynamicsObj.getFilters(request)
 
     html = render_to_string(
         'serverinfo/network_extraform.html',
-        {
+            {
             'inputs': inputs,
             }
-        )
+    )
 
     return html
 
@@ -93,23 +78,26 @@ def getIpInputHtml(request):
 # stable version! Its not in 1.3.1. JS request stuff is ready..
 #@ensure_csrf_cookie
 def details(request, serverID, naming='id'):
+    serverObj = None
     if naming == 'id':
         serverObj = get_object_or_404(Server, id=serverID)
     if naming == 'name':
         serverObj = get_object_or_404(Server, name=serverID)
 
+    if not serverObj:
+        raise Http404
     attributes_html = getAttributeTableHtml(serverObj)
     network_html = getIpTableHtml(serverObj)
     net_form_helpers = getIpInputHtml(request)
 
     return render_to_response('serverinfo/details.html', {
-            'server': serverObj,
-            'attributes_html': attributes_html,
-            'network_html': network_html,
-            'net_form': AddIPForm,
-            'net_form_helpers': net_form_helpers,
-            'attr_form': AddAttributeForm,
-            }, context_instance=RequestContext(request))
+        'server': serverObj,
+        'attributes_html': attributes_html,
+        'network_html': network_html,
+        'net_form': AddIPForm,
+        'net_form_helpers': net_form_helpers,
+        'attr_form': AddAttributeForm,
+        }, context_instance=RequestContext(request))
 
 
 def index(request):
@@ -126,8 +114,8 @@ def index(request):
             if column.get('isAttribute', None):
                 columns.append(column)
 
-    # Remove all none dicts which is left because we didnt find a match
-    [ columns.remove(i) for i in columns if type(i) != dict ]
+    # Remove all none dicts which is left because we didn't find a match
+    [columns.remove(i) for i in columns if type(i) != dict]
 
     filters = []
     for f in config.filters:
@@ -137,7 +125,7 @@ def index(request):
 
     return render_to_response(
         'serverinfo/index.html',
-        {
+            {
             'columns': columns,
             'filters': filters,
             }

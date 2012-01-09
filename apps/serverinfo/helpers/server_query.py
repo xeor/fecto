@@ -43,9 +43,9 @@ class ServerQuery():
 
 
     def handleColumnFilters(self, serversObj):
-        '''
+        """
         Collects and figure out information we need about the colum filtering. The filtering for each columns in the list.
-        '''
+        """
         configObj = Conf()
         #visibleColumnFiltersRaw = self.keys.get('visibleColumnFilters', '').split('.')
         re_columnfilter = re.compile(r'^columnfilter_')
@@ -110,9 +110,7 @@ class ServerQuery():
         return serversObj
 
 
-    def handleMainQuery(self, serversObj): # WAS searchHandlerSearchFilter
-        # FIXME, not implemented, name ORing function
-
+    def handleMainQuery(self, serversObj):
         # request -> query
         # serverListObj -> serversObj
         # attrToUse -> self.columnFiltersToUse
@@ -131,21 +129,17 @@ class ServerQuery():
 
             q = q | Q(**{filterPath: query})
 
-        #import ipdb; ipdb.set_trace()
-        # FIXME: Q contains OR: (AND,).... ????
-
         return serversObj.filter(q)
 
 
     def handleCustomFilters(self, serversObj):
-        '''
+        """
         Run the trough every custom filters and apply their own filter functions to the serversObj
-        '''
+        """
         serverFilters = server_filters.ServerFilters()
         for customFilter in serverinfoConfig.filters:
             filterObj = serverFilters.getFilterObj(customFilter)
-            if filterObj == False: continue
-            filterID = filterObj['id']
+            if filterObj is False: continue
 
             filteredData = filterObj['filter'](self.keys, serversObj)
             if not filteredData == False:
@@ -154,14 +148,10 @@ class ServerQuery():
         return serversObj
 
     def handleSorting(self, serversObj):
-        # FIXME, maybe some issues when sorting on secondary fields
         # FIXME, default sorting should be configurable
         sort = self.keys.get('iSortingCols', False)
         self.pagingStart = int(self.keys.get('iDisplayStart', 0))
         self.pagingCount = int(self.keys.get('iDisplayLength', 10))
-
-        if self.pagingCount == -1:
-            self.pagingCount = serverCount
 
         # We are supporting many sort fields, so we need to go trough iSortCol_N to find out what to sort
         # Default sort is 'name'
@@ -174,7 +164,7 @@ class ServerQuery():
                 sortfieldID = self.keys.get('iSortCol_%s' % (str(i),), False)
 
                 if sortfieldID:
-                    # We have a +/- field staticly in our table, so we need -1 to match our fields
+                    # We have a +/- field statically in our table, so we need -1 to match our fields
                     sortfield = self.columnFiltersToUse[int(sortfieldID) - 1]
 
                     if sortfield:
@@ -202,8 +192,7 @@ class ServerQuery():
         return serversObj
 
     def generateDataTablesEntry(self, serverObj):
-        entryData = []
-        entryData.append('<img src=\"/static/serverinfo/img/details_open.png\" rel="%s">' % serverObj.id) # First entry is +/- image
+        entryData = ['<img src=\"/static/serverinfo/img/details_open.png\" rel="%s">' % serverObj.id]
         for columnFilter in self.columnFiltersToUse:
             try:
                 columnData = getattr(serverObj, columnFilter)
@@ -223,7 +212,7 @@ class ServerQuery():
                     # FIXME, config separator
                     columnData = ', '.join(columnData)
 
-                if columnData == None:
+                if columnData is None:
                     columnData = ''
 
                 # Our columnData should be a string by now..
@@ -235,14 +224,6 @@ class ServerQuery():
 
             except AttributeError:
                 # We are probably dealing with an attribute since normal database query failed.
-                # 1 query per foreignkey name.... FIXME
-                #attributeData = serverObj.attributes.filter(name__name=columnFilter)
-                #output = ', '.join([ unicode(a) for a in attributeData ])
-
-                #myAttributes = self.attributesObj.filter(server=serverObj)
-                #curAttribute = myAttributes.filter(attributeType__id_name=columnFilter)
-                #output = ', '.join([ unicode(attr) for attr in curAttribute ]) 
-
                 if not self.attributesObj.get(serverObj.id, None):
                     entryData.append('')
                     continue
@@ -252,7 +233,6 @@ class ServerQuery():
                     continue
 
                 entryData.append( ', '.join(self.attributesObj[serverObj.id]['attr'][columnFilter]) )
-                #entryData.append('* Error handeling datafield *')
                 
 
         return entryData
@@ -260,11 +240,10 @@ class ServerQuery():
     def genAttributeObj(self, servers):
         servers = [ s for s in servers ] # Workaround for bug: <broken repr (DatabaseError:....
         attributesObj = AttributeMapping.objects.select_related().filter(server__in=servers)
-
         allAttributes = {}
         for attribute in attributesObj:
+            serverID = attribute.server_id
             if not allAttributes.get(attribute.server_id, None):
-                serverID = attribute.server_id
                 allAttributes[serverID] = {}
                 allAttributes[serverID]['attr'] = {}
                 allAttributes[serverID]['servername'] = attribute.server.name
@@ -323,7 +302,7 @@ class ServerQuery():
         serversDict = self.generateDict(serversObj)
 
         # Make sure our newly added server is on the top of our list
-        # We dont need to count or do anything special with this. It
+        # We don't need to count or do anything special with this. It
         # will get another color as well in the gui
         newServer = keys.get('newserver', None)
         if newServer:
@@ -337,7 +316,7 @@ class ServerQuery():
         # List used by the "freeze list" link, which makes us able to
         # freeze the current displayed list of servers, and filter on
         # that list as well.. This is placed here because we only want
-        # a freeze list of whats displayed. Not everything that matces
+        # a freeze list of whats displayed. Not everything that matches
         serversDict['serversCSV'] = ','.join( [ str(s.id) for s in serversObj ] )
 
         # The api framework will take care of converting this into json

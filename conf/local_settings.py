@@ -3,8 +3,6 @@
 import os
 SITE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-import datetime
-
 DEBUG = True
 #DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -25,6 +23,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Debug toolbar
 def custom_show_toolbar(request):
@@ -179,6 +179,7 @@ INSTALLED_APPS = (
     # Misc
     'django_hosts',
     'south',
+    'django_nose',
     'reversion',
     'compressor',
     #'treemenus',

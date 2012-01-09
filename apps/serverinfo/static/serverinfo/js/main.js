@@ -184,7 +184,6 @@ function get_ip_vlan(thisObj) {
 
 
 $(document).ready(function() {
-
     // Start of table stuff
     oTable = $('#serverlist').dataTable( {
 	'aLengthMenu': [[10, 25, 50, -1], [10, 25, 50, 'All (dont use if not needed)']],
