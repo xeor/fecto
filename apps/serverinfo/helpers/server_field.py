@@ -1,5 +1,7 @@
 import ipaddr
 
+import reversion
+
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.core.exceptions import ValidationError
@@ -124,8 +126,19 @@ class ServerInlineForm():
 
         return value
 
+    def getAttributeHistory(self, keys):
+        '''
+        FIXME: work in progress.. just notes right now..
+        NEXT
+        '''
+        history = reversion.get_unique_for_object(attibuteObj)
+        historyList = sorted([ (h.revision.date_created, h.field_dict) for h in history ])
+        return historyList
 
     def addIP(self, keys):
+        """
+
+        """
         value = keys.get('value', None)
         if value == None:
             raise Http404

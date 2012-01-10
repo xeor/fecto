@@ -97,6 +97,10 @@ class AttributeResource(View):
             status = serverInlineForm.removeAttribute(request.GET)
             return status
 
+        if 'history' in request.GET:
+            history = serverInlineForm.getAttributeHistory(request.GET)
+            return history
+
         return {}
 
     def post(self, request):
