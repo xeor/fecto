@@ -3,6 +3,8 @@ import datetime
 
 from django.db.models import Q
 
+from lib.errors import *
+
 from apps.siteconfig.conf import Conf
 from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.models import Server, AttributeMapping
@@ -87,6 +89,8 @@ class ServerQuery():
 
         self.columnFiltersToUse = []
         [ self.columnFiltersToUse.append(columnFilterName) for columnFilterName in conf_columnFilters if columnFilterName in columnsVisible ]
+        if self.columnFiltersToUse == []:
+            raise ConfigurationError('No columnFiltersToUse is defined')
 
         columnFilters = {}
         nonSearchable = []

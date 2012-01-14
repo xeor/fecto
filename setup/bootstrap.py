@@ -26,7 +26,7 @@
 # ./manage.py syncdb
 # ./manage.py migrate
 # ./manage.py collectstatic
-# TODO: change config (usedColumns) to newlineArray
+# ./manage.py sync_config # TODO: change config (usedColumns) to newlineArray
 # yum install redis
 # ./manage.py migrate reversion
 

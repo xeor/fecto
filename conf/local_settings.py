@@ -24,7 +24,7 @@ DATABASES = {
     }
 }
 
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 # Debug toolbar
 def custom_show_toolbar(request):
