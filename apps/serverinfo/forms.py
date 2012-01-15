@@ -3,17 +3,17 @@ from django import forms
 from apps.serverinfo.models import AttributeType
 
 class AddAttributeForm(forms.Form):
-    def validTypes():
+    def __init__(self, *args, **kwargs):
+        """
+        Handle attributes field here in __init__ so we can avoid Django caching our Attributes
+        """
+        super(AddAttributeForm, self).__init__(*args, **kwargs)
         types = []
         for t in AttributeType.objects.all().order_by('name'):
-            types.append(((t.id), (t.name)))
-        return tuple(types)
-
-    attrtype = forms.ChoiceField(label='Type', choices=validTypes())
-    value = forms.CharField(
-        max_length=255,
-        widget=forms.TextInput({'placeholder': 'Value'}),
-        )
+            types.append((t.id, t.name))
+        validTypes = tuple(types)
+        self.fields['attrtype'] = forms.ChoiceField(label='Type', choices=validTypes)
+        self.fields['value'] = forms.CharField(max_length=255)
 
     class Meta:
         # FIXME
