@@ -73,7 +73,7 @@ class ServerInlineForm():
     def editInlineFormData(self, keys):
         value = keys.get('value', None)
 
-        if value == None:
+        if value is None:
             raise Http404
 
         serverObj, field, edittype = self.parseRequestedInlineFormData(keys['id'])
@@ -96,7 +96,7 @@ class ServerInlineForm():
 
     def addAttribute(self, keys):
         value = keys.get('value', None)
-        if value == None:
+        if value is None:
             raise Http404
 
         serverObj = get_object_or_404(Server, id=keys.get('server', None))
@@ -105,13 +105,11 @@ class ServerInlineForm():
         attrValueObj = AttributeValue(value=value)
         attrValueObj.save()
 
-        # FIXME, validation and convertion.. See comment on model
-
         attrObj = AttributeMapping(attributeValue=attrValueObj, attributeType=attrTypeObj, server=serverObj)
         attrObj.save()
 
         rowHTML = getAttributeTableHtml(serverObj)
-        value = {'row': rowHTML}
+        value = {'row': rowHTML, 'multipleAllowed': attrTypeObj.multiple_allowed, 'id': attrTypeObj.id}
         return value
 
     def removeAttribute(self, keys):
@@ -126,12 +124,15 @@ class ServerInlineForm():
 
         return value
 
-    def getAttributeHistory(self, keys):
-        '''
+    def getFieldHistory(self, keys):
+        """
         FIXME: work in progress.. just notes right now..
         NEXT
-        '''
-        history = reversion.get_unique_for_object(attibuteObj)
+        """
+        fieldID = keys.get('id')
+        attributeMappingObj = get_object_or_404(AttributeMapping, id=attrID)
+        serverObj = attributeMappingObj.server
+        history = reversion.get_unique_for_object(serverObj)
         historyList = sorted([ (h.revision.date_created, h.field_dict) for h in history ])
         return historyList
 
@@ -140,7 +141,7 @@ class ServerInlineForm():
 
         """
         value = keys.get('value', None)
-        if value == None:
+        if value is None:
             raise Http404
 
         serverObj = get_object_or_404(Server, id=keys.get('server', None))

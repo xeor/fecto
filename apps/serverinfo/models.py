@@ -154,7 +154,7 @@ class Server(models.Model):
 
 
 class AttributeType(models.Model):
-    id_name = models.CharField(max_length=32, db_index=True)
+    id_name = models.CharField(max_length=32, db_index=True, unique=True)
     name = models.CharField(max_length=32, db_index=True)
     autopopulated = models.BooleanField(default=False) # Means they cant be edited, FIXME
     description = models.TextField(blank=True, null=True, db_index=True)

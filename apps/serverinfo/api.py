@@ -50,6 +50,10 @@ class ServerInlineFormResource(View):
         if not request.GET.get('id', None):
             return {}
 
+        if 'history' in request.GET:
+            history = serverInlineForm.getAttributeHistory(request.GET)
+            return history
+
         serverInlineForm = server_field.ServerInlineForm()
         inlineFormDict = serverInlineForm.getInlineFormData(request.GET)
 
@@ -96,10 +100,6 @@ class AttributeResource(View):
         if 'remove' in request.GET:
             status = serverInlineForm.removeAttribute(request.GET)
             return status
-
-        if 'history' in request.GET:
-            history = serverInlineForm.getAttributeHistory(request.GET)
-            return history
 
         return {}
 

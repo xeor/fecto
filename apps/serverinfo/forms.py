@@ -1,16 +1,24 @@
 from django import forms
+from django.shortcuts import get_object_or_404
 
-from apps.serverinfo.models import AttributeType
+from apps.serverinfo.models import AttributeType, Server
 
 class AddAttributeForm(forms.Form):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, serverID, *args, **kwargs):
         """
         Handle attributes field here in __init__ so we can avoid Django caching our Attributes
         """
         super(AddAttributeForm, self).__init__(*args, **kwargs)
         types = []
+
+        # Get a list of attributetypes we cant have more than one of..
+        serverObj = get_object_or_404(Server, id=serverID)
+        ignoreList = serverObj.attributemapping_set.filter(attributeType__multiple_allowed=False)
+        ignoredAttributes = [ a.attributeType.id for a in ignoreList ]
+
         for t in AttributeType.objects.all().order_by('name'):
-            types.append((t.id, t.name))
+            if t.id not in ignoredAttributes:
+                types.append((t.id, t.name))
         validTypes = tuple(types)
         self.fields['attrtype'] = forms.ChoiceField(label='Type', choices=validTypes)
         self.fields['value'] = forms.CharField(max_length=255)

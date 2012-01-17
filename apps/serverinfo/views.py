@@ -42,7 +42,6 @@ def getIpTableHtml(serverObj):
     networkObj = IP.objects.filter(server=serverObj)
     count = networkObj.count()
 
-    print 'so', serverObj
     if count != 0:
         html = render_to_string(
             'serverinfo/network_html.html',
@@ -96,7 +95,7 @@ def details(request, serverID, naming='id'):
         'network_html': network_html,
         'net_form': AddIPForm,
         'net_form_helpers': net_form_helpers,
-        'attr_form': AddAttributeForm,
+        'attr_form': AddAttributeForm(serverID=serverID),
         }, context_instance=RequestContext(request))
 
 
