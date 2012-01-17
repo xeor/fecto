@@ -66,10 +66,6 @@ class IPFormDynamics():
         filterItems = {}
         vlansObj = Vlan.network_objects.all()
 
-        # FIXME, some weird caching issue. Haveto call object first to
-        # get this to work as it should..
-        #vlansObj.filter(location__isnull=False)
-
         if vlansObj.filter(location__isnull=False):
             # We have one or more locations which have a location
             filterType = 'location'

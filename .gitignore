@@ -6,3 +6,5 @@
 /ext/
 /docs/_build
 /private/
+.coverage
+/.idea

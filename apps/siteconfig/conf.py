@@ -8,7 +8,7 @@ from apps.siteconfig import models
 class Conf:
     def _getDbObj(self, confType, name, app):
         if not hasattr(models, confType):
-            return false
+            return False
 
         dbObj = getattr(models, confType)
 
@@ -22,8 +22,14 @@ class Conf:
 
     def add(self, confType, name, appName = '', default = '', permissions = '', description = ''):
         dbObj = self._getDbObj(confType, name, appName)
-
-        dbObj(app=appName, name=name, value=default, default=default, permission=permissions, description=description).save()
+        dbObj.app = appName
+        dbObj.name = name
+        dbObj.value = default
+        dbObj.default = default
+        dbObj.permission = permissions
+        dbObj.description = description
+        dbObj.varType = confType
+        dbObj.save()
         return True
 
     def get(self, confType, name, app):
@@ -33,7 +39,7 @@ class Conf:
 
             varType = dbObj.varType
 
-            if varType == 'text':
+            if varType == 'Text':
                 value = dbObj.value.strip()
             if varType == 'newlineArray':
                 value = dbObj.value.split('\n')

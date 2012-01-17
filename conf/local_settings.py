@@ -3,8 +3,6 @@
 import os
 SITE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-import datetime
-
 DEBUG = True
 #DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -179,6 +177,7 @@ INSTALLED_APPS = (
     # Misc
     'django_hosts',
     'south',
+    #'django_nose', # Didnt use
     'reversion',
     'compressor',
     #'treemenus',

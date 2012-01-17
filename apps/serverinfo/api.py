@@ -50,6 +50,10 @@ class ServerInlineFormResource(View):
         if not request.GET.get('id', None):
             return {}
 
+        if 'history' in request.GET:
+            history = serverInlineForm.getAttributeHistory(request.GET)
+            return history
+
         serverInlineForm = server_field.ServerInlineForm()
         inlineFormDict = serverInlineForm.getInlineFormData(request.GET)
 
@@ -112,7 +116,10 @@ class ServerNewResource(View):
 
     def post(self, request):
         serverObj = Server()
-        serverName = 'server-%s' % str(Server.objects.latest('id').id + 1)
+        try:
+            serverName = 'server-%s' % str(Server.objects.latest('id').id + 1)
+        except Server.DoesNotExist:
+            serverName = 'server-0'
         serverObj.name = serverName
         serverObj.status = 6 # Hidden
         serverObj.save()

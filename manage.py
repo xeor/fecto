@@ -10,11 +10,12 @@ except ImportError:
 
 import settings
 
-import sys, os
+import os
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-sys.path.insert(0, os.path.join(PROJECT_ROOT,'ext/lib/python2.6/site-packages'))
-sys.path.insert(0, os.path.join(PROJECT_ROOT,'ext/lib/python2.7/site-packages')) # FIXME: Dirty fix.. Autodetect... :)
-sys.path.insert(0, PROJECT_ROOT)
+
+#sys.path.insert(0, os.path.join(PROJECT_ROOT,'ext/lib/python2.6/site-packages'))
+#sys.path.insert(0, os.path.join(PROJECT_ROOT,'ext/lib/python2.7/site-packages'))
+#sys.path.insert(0, PROJECT_ROOT)
 
 from django.core.management import execute_manager
 

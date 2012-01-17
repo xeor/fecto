@@ -90,7 +90,7 @@ class IP(models.Model):
                 break
 
     def getGateway(self):
-        # Returns firs ip in the network.. FIXME, configurable?
+        # Returns firs ip in the network..
         if self.vlan:
             ipObj = ipaddr.IPv4Network(self.vlan.network)
             return ipObj.iterhosts().next()
@@ -154,7 +154,7 @@ class Server(models.Model):
 
 
 class AttributeType(models.Model):
-    id_name = models.CharField(max_length=32, db_index=True)
+    id_name = models.CharField(max_length=32, db_index=True, unique=True)
     name = models.CharField(max_length=32, db_index=True)
     autopopulated = models.BooleanField(default=False) # Means they cant be edited, FIXME
     description = models.TextField(blank=True, null=True, db_index=True)
