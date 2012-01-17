@@ -21,6 +21,13 @@ class SimpleTest(TestCase):
         response = self.client.get('/serverinfo/')
         self.assertEqual(response.status_code, 200)
 
+    def test_details(self):
+        """
+        Check if we can see server details and info in it
+        """
+        response = self.client.get('/serverinfo/details/1')
+        self.assertContains(response, '10.0.0.2', 1) # One of the ip's
+
     def test_get_serverinfo(self):
         """
         Test that we have the testdb up and working

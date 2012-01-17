@@ -24,8 +24,6 @@ DATABASES = {
     }
 }
 
-#TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-
 # Debug toolbar
 def custom_show_toolbar(request):
     return True # Always show for now..
@@ -179,7 +177,7 @@ INSTALLED_APPS = (
     # Misc
     'django_hosts',
     'south',
-    'django_nose',
+    #'django_nose', # Didnt use
     'reversion',
     'compressor',
     #'treemenus',
