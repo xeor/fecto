@@ -22,6 +22,21 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function list_history(thisObj) {
+    dataArray = new Array();
+    dataArray['test'] = 'testing';
+    $.ajax({
+        type:"GET",
+        url:serverinfoRootURL + 'api/server/attribute/history/',
+        cache:false,
+        data:dataArray,
+        success:function (form_data) {
+            alert(form_data);
+            //$('#net_form_helpers-' + id_server).html(form_data);
+            return true;
+        }
+    });
+}
 
 function add_attribute(thisObj, tableObj) {
     var dataArray = $(thisObj).closest('form').serializeArray();
@@ -31,6 +46,9 @@ function add_attribute(thisObj, tableObj) {
         tableObj.html(
             $(data.row).hide().fadeIn(300)
         );
+        if (data.multipleAllowed == false) {
+            $("#id_attrtype option[value='" + data.id + "']").remove();
+        }
     }, 'json');
     return false;
 }
@@ -49,7 +67,7 @@ function add_ip(thisObj, tableObj) {
 
 
 $.editable.addInputType('checkbox', {
-    element : function(settings, original) {
+    element: function(settings, original) {
         var input = $('<input type="checkbox">test</input>');
         $(this).append(input);
         return(input);
@@ -57,7 +75,7 @@ $.editable.addInputType('checkbox', {
 });
 
 $(document).ready(function() {
-    $(".edit-text").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
+    $(".edit-text").editable(serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
@@ -67,7 +85,7 @@ $(document).ready(function() {
         style: 'display: inline',
     });
 
-    $(".edit-textarea").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
+    $(".edit-textarea").editable(serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
@@ -78,12 +96,12 @@ $(document).ready(function() {
         rows: 3,
     });
 
-    $(".edit-select").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
+    $(".edit-select").editable(serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
-        type   : 'select',
-        loadurl : serverinfoRootURL + 'api/server/inlineForm/',
+        type: 'select',
+        loadurl: serverinfoRootURL + 'api/server/inlineForm/',
         cancel: 'Cancel',
         submit: 'OK',
         style: 'display: inline',
@@ -91,11 +109,11 @@ $(document).ready(function() {
 
     // We dont use checkboxes yet.. But it is a custom type with a
     // true/false select box..
-    $(".edit-checkbox").editable( serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
+    $(".edit-checkbox").editable(serverinfoRootURL + 'api/server/inlineForm/?_accept=text/raw', {
         submitdata: {csrftoken: getCookie('csrftoken')},
         tooltip: 'Click to edit...',
         placeholder: '** Click to set **',
-        type   : 'checkbox',
+        type: 'checkbox',
         loadurl : serverinfoRootURL + 'api/server/inlineForm/',
         cancel: 'Cancel',
         submit: 'OK',
@@ -103,9 +121,9 @@ $(document).ready(function() {
     });
 
 
-
     // Attribute form/button handeling
-    $('.attr_remove').die().live('click', function() {
+    $('.attr_remove').die().live('click', function () {
+        // FIXME: Add attribute to the select box if its allowed..
         // Kill previous live, to handle duplicate simulated clicks when more than one .attr_remove is visible
         var dataArray = new Array();
         dataArray.push({'name': 'csrftoken', 'value': getCookie('csrftoken')});
@@ -131,13 +149,12 @@ $(document).ready(function() {
         return false;
     });
     $('.form_attributes').unbind('keypress').bind('keypress', function(e){
-        if ( e.which == 13 ) {
+        if (e.which == 13) {
             var tableobj = $(this).siblings('.attr_table_wrapper');
             add_attribute(this, tableobj);
             return false;
         }
     });
-
 
 
     // IP form/button handeling
@@ -236,15 +253,14 @@ $(document).ready(function() {
 
         $.ajax({
             type:'POST',
-    	    url: serverinfoRootURL + 'api/server/note/',
-            data: dataArray,
-    	    success: function(form_data)
-    	    {
+            url:serverinfoRootURL + 'api/server/note/',
+            data:dataArray,
+            success:function (form_data) {
                 $(statusObj).show()
                 $(statusObj).html('Saved...');
                 $(statusObj).fadeOut('slow');
                 return 'saved';
-    	    }
+            }
         });
 
 
