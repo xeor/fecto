@@ -25,7 +25,7 @@ env = os.environ.get('APP_ENV', 'dev')
 # try to load user specific settings
 uid = pwd.getpwuid(os.getuid())[0]
 
-modules = ('common', env, uid)
+modules = ('upstream', 'common', env, uid)
 current = __name__
 for module_name in modules:
     try:
