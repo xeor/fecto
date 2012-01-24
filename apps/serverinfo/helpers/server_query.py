@@ -223,8 +223,10 @@ class ServerQuery():
 
                     entryData.append(', '.join(attributeData))
                 else:
-                    # FIXME, append the real data
-                    entryData.append('')
+                    try:
+                        entryData.append( ', '.join(self.attributesObj[serverObj.id]['attr'][columnFilter]) )
+                    except KeyError:
+                        entryData.append('')
 
             else:
                 # We are dealing with a normal field
