@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load serverinfo_extras %}
 {% block title %}Serverinfo{% endblock title %}
 
 {% block extracss %}
@@ -112,11 +113,11 @@ aoColumns.push(htmlOptions);
 	<th></th>
 	{% for c in columns %}
 	  {% if c.noFilter %}
-	    <th></th>
+        <th>{{ c.id|getAttributeFilter:attributeFilters|safe }}</th>
 	  {% else %}
 	    <th>
               {% if c.selectFilter %}
-                <select class="search_init" value="" id="columnfilter_{{ c.id }}">
+                <select class="search_init" id="columnfilter_{{ c.id }}">
                   <option value=""></option>
                   {% for optval,optname in c.selectFilter.items %}
                   <option value="{{ optval }}">{{ optname }}</option>

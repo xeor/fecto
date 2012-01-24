@@ -10,12 +10,16 @@ from django.http import Http404
 from apps.siteconfig.conf import Conf
 from apps.serverinfo.models import Server, AttributeMapping, IP
 from apps.serverinfo import config
-from apps.serverinfo.helpers import server_columns, form_dynamics, server_filters
+from apps.serverinfo.helpers import server_columns, form_dynamics, server_filters, attribute
 
 from forms import AddAttributeForm, AddIPForm
 
 # We need this to be included to get the filtering templates to work
 filter_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'filters'))
+settings.TEMPLATE_DIRS = settings.TEMPLATE_DIRS + (filter_path,)
+
+# Same with attributes
+filter_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'attributes'))
 settings.TEMPLATE_DIRS = settings.TEMPLATE_DIRS + (filter_path,)
 
 # Special simplejson encoder to support ugettext_lazy objects..
@@ -103,14 +107,18 @@ def index(request):
     c = Conf()
     serverColumns = server_columns.ServerColumns()
     serverFilters = server_filters.ServerFilters()
+    attributeManager = attribute.AttributeManager()
 
     columns = c.get('Text', 'usedColumns', 'apps.serverinfo') # was attributes =
+    attributeFilters = {}
 
     for column in serverColumns.columns:
         if (column['id'] in columns) and (column['id'] in serverColumns.columnsIDs):
             columns[columns.index(column['id'])] = column
         else:
             if column.get('isAttribute', None):
+                currentAttributeObj = attributeManager.getAttributeObj(column['id'])()
+                attributeFilters[column['id']] = currentAttributeObj.searchInput()
                 columns.append(column)
 
     # Remove all none dicts which is left because we didn't find a match
@@ -127,5 +135,6 @@ def index(request):
             {
             'columns': columns,
             'filters': filters,
+            'attributeFilters': attributeFilters,
             }
         , context_instance=RequestContext(request))

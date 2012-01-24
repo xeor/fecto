@@ -76,24 +76,23 @@ function fnFormatDetails(nTr, thisObj) {
 /* Event handler function */
 function fnOpenClose(oSettings) {
     $('td img', oTable.fnGetNodes() ).each( function () {
-	$(this).click( function () {
-	    var nTr = this.parentNode.parentNode;
-	    if ( this.src.match('details_close') ) {
-		/* This row is already open - close it */
-		this.src = '/static/serverinfo/img/details_open.png';
-		oTable.fnClose( nTr );
-
+        $(this).click( function () {
+            var nTr = this.parentNode.parentNode;
+            if ( this.src.match('details_close') ) {
+                /* This row is already open - close it */
+                this.src = '/static/serverinfo/img/details_open.png';
+                oTable.fnClose( nTr );
                 // If we do an fnDraw() here, it will refresh the
                 // table the correct way, but it will also close every
                 // open details. FIXME, check if any details is open,
                 // if there is, dont run fnDraw...
                 //oTable.fnDraw(false);
-	    } else {
-		/* Open this row */
-		this.src = '/static/serverinfo/img/details_close.png';
-		oTable.fnOpen( nTr, fnFormatDetails(nTr,this), 'serv_details' );
-	    }
-	});
+            } else {
+                /* Open this row */
+                this.src = '/static/serverinfo/img/details_close.png';
+                oTable.fnOpen( nTr, fnFormatDetails(nTr,this), 'serv_details' );
+            }
+        });
     });
 }
 
@@ -112,12 +111,12 @@ function fnShowHide(iColName) {
 function fnResetAllFilters() {
     var oSettings = oTable.fnSettings();
     for (iCol = 0; iCol < oSettings.aoPreSearchCols.length; iCol++) {
-	oSettings.aoPreSearchCols[ iCol ].sSearch = '';
+        oSettings.aoPreSearchCols[ iCol ].sSearch = '';
     }
     $('.dataTables_filter input').val('').keyup();
 
-    $('tfoot input').each( function (i) {
-	this.value = '';
+    $('.search_init').each( function (i) {
+        this.value = '';
     });
 
     // FIXME, should also delete oTable cookie
@@ -128,7 +127,7 @@ function fnResetAllFilters() {
 function fnCreateSelect(aData) {
     var r = '<select><option value=""></option>', i, iLen = aData.length;
     for (i = 0; i<iLen; i++) {
-	r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
+        r += '<option value="'+aData[i]+'">'+aData[i]+'</option>';
     }
     return r + '</select>';
 }
@@ -151,7 +150,7 @@ function get_ip_location(thisObj) {
 
     $.ajax({
         type:"GET",
-    	url: serverinfoRootURL + 'api/getIpHelperForms/?_accept=text/raw',
+        url: serverinfoRootURL + 'api/getIpHelperForms/?_accept=text/raw',
     	cache: false,
         data: dataArray,
     	success: function(form_data)
@@ -194,80 +193,82 @@ $(document).ready(function() {
 	'sPaginationType': 'full_numbers',
 	'sAjaxSource': serverinfoRootURL + 'api/server/datatables/',
 	'fnServerData': function(sSource, aoData, fnCallback ) {
+        $('.filter_value').each(function(index) {
+            aoData.push({'name': this.id, 'value': $(this).val()});
+        });
 
-            $('.filter_value').each(function(index) {
-		aoData.push({'name': this.id, 'value': $(this).val()});
-            });
-
-	    for (var i = 0, len = columns.length; i<len; ++i) {
-		val = $('#columnfilter_' + columns[i]).val();
-		if (typeof val === 'undefined') {
-		    val = '';
-		}
-		aoData.push( { "name": "columnfilter_" + columns[i], "value": val } );
-	    }
-
-            if ($('span.newserver').length) {
-		aoData.push({'name': 'newserver', 'value': $('span.newserver').attr('id')});
+        for (var i = 0, len = columns.length; i<len; ++i) {
+            val = $('#columnfilter_' + columns[i]).val();
+            if (typeof val === 'undefined') {
+                val = '';
             }
+            aoData.push( { "name": "columnfilter_" + columns[i], "value": val } );
+        }
 
-            var extraGETs = getQueryParams(document.location.search);
-            if (extraGETs) {
-                for(var gets in extraGETs) {
-                    aoData.push({'name': 'extra_' + gets, 'value': extraGETs[gets]});
-                }
+        if ($('span.newserver').length) {
+            aoData.push({'name': 'newserver', 'value': $('span.newserver').attr('id')});
+        }
+
+        var extraGETs = getQueryParams(document.location.search);
+        if (extraGETs) {
+            for(var gets in extraGETs) {
+                aoData.push({'name': 'extra_' + gets, 'value': extraGETs[gets]});
             }
+        }
 
-            var columnsVisibleFilterableArr = []
-	    $('.search_init').each(function() {
-		columnsVisibleFilterableArr.push($(this).attr('id'));
+        var columnsVisibleFilterableArr = []
+        $('.search_init').each(function() {
+            columnsVisibleFilterableArr.push($(this).attr('id'));
 	    });
 
-            var columnsVisibleFilterable = columnsVisibleFilterableArr.join('.');
-	    aoData.push({'name': 'columnsVisibleFilterable', 'value': columnsVisibleFilterable});
+        var columnsVisibleFilterable = columnsVisibleFilterableArr.join('.');
+        aoData.push({'name': 'columnsVisibleFilterable', 'value': columnsVisibleFilterable});
 
-	    $.ajax({
-		dataType: 'json',
-		type: 'GET',
-		url: sSource,
-		data: aoData,
-		success: function(json) {
-                    $('#admLink_frozenlist').attr('href', serverinfoRootURL + '?freezeByID=' + json['serversCSV']);
-                    fnCallback(json)
-                },
-		error: function() {
-		    // FIXME, this should be a notifier instead
-		    alert("Error grabbing data from server..");
-		}
-	    });
-	},
-	'sDom': 'T<"clear">lfrtip',
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: sSource,
+            data: aoData,
+            success: function(json) {
+                $('#admLink_frozenlist').attr('href', serverinfoRootURL + '?freezeByID=' + json['serversCSV']);
+                fnCallback(json)
+            },
+            error: function() {
+                // FIXME, this should be a notifier instead
+                alert("Error grabbing data from server..");
+            }
+        });
+    },
+        'sDom': 'T<"clear">lfrtip',
         'oTableTools': {
             'sSwfPath': '/static/serverinfo/lib/DataTables-1.8.1/media/swf/copy_cvs_xls.swf'
         },
-	'oLanguage': {
-	    'sSearch': 'Search all visible columns:'
-	},
-	'aoColumns': aoColumns,
-	'aaSorting': [[1, 'asc']],
-	'fnDrawCallback': fnOpenClose,
+        'oLanguage': {
+            'sSearch': 'Search all visible columns:'
+        },
+        'aoColumns': aoColumns,
+        'aaSorting': [[1, 'asc']],
+        'fnDrawCallback': fnOpenClose,
     }); // End of oTable = ...
 
     $('#serverlist_filter input').select()
 
     $('#serverlist_filter').append('&nbsp;&nbsp;<a href="#" id="reset">Reset</a>');
     $('#reset').click(function(event) {
-	fnResetAllFilters();
+        fnResetAllFilters();
     });
 
-    // Footer stuff
-    $('tfoot input').keyup( function () {
-	/* Filter on the column (the index) of this element */
-	oTable.fnFilter( this.value, $("tfoot input").index(this) );
+    // Footer filter stuff
+
+    $('.search_init').keyup( function () {
+        /* Used by text elements */
+        oTable.fnFilter( this.value, 0 );
     });
-    $('tfoot select').change( function () {
-	oTable.fnFilter( this.value, $("tfoot select").index(this) );
+    $('.search_init').change( function () {
+        /* Used by other elements, example select boxes */
+        oTable.fnFilter( this.value, 0 );
     });
+
 
     // New server button
     $('#admLink_newserv').click(function() {
@@ -311,42 +312,42 @@ $(document).ready(function() {
     });
 
     $('.filterToggle').toggle(function() {
-	$(this).css({'font-weight': 'bold'});
-	$('#jail_' + this.id).show();
+        $(this).css({'font-weight': 'bold'});
+        $('#jail_' + this.id).show();
     }, function() {
-	$(this).css({'font-weight': ''});
-	$('#jail_' + this.id).hide();
-	$('#' + this.id + '_value').val('');
-	oTable.fnDraw();
+        $(this).css({'font-weight': ''});
+        $('#jail_' + this.id).hide();
+        $('#' + this.id + '_value').val('');
+        oTable.fnDraw();
     });
 
 
     // Row selector
     $('.rowSelect').click(function() {
-	if ( $(this).css('font-weight') == 'bold' ) {
-	    $(this).css({'font-weight': ''});
-	} else {
-	    $(this).css({'font-weight': 'bold'});
-	}
-	fnShowHide(this.id);
+        if ( $(this).css('font-weight') == 'bold' ) {
+            $(this).css({'font-weight': ''});
+        } else {
+            $(this).css({'font-weight': 'bold'});
+        }
+        fnShowHide(this.id);
     });
 
     $('.administerLinks').toggle(function() {
-	$(this).css({'font-weight': 'bold'});
-	$('#table_' + this.id).show();
+        $(this).css({'font-weight': 'bold'});
+        $('#table_' + this.id).show();
     }, function() {
-	$(this).css({'font-weight': ''});
-	$('#table_' + this.id).hide();
+        $(this).css({'font-weight': ''});
+        $('#table_' + this.id).hide();
     });
 
     $('#special_filter_apply').click(function(){
-	oTable.fnDraw();
+        oTable.fnDraw();
     })
 
     $('#special_filter').keyup(function(e) {
-	if(e.keyCode == 13) {
-	    oTable.fnDraw();
-	}
+        if(e.keyCode == 13) {
+            oTable.fnDraw();
+        }
     });
 
 }); // End of $(document).ready(

@@ -22,3 +22,15 @@ def parseSharedIPs(ips, server):
     return ', '.join(sharedServers)
 
 register.filter('parseSharedIPs', parseSharedIPs)
+
+def getAttributeFilter(attributeID, attributeFilters):
+    if not attributeFilters.get(attributeID, None):
+        return ''
+
+    attributeFilterHtml = attributeFilters[attributeID]
+
+    if not attributeFilterHtml:
+        return ''
+
+    return attributeFilterHtml
+register.filter('getAttributeFilter', getAttributeFilter)

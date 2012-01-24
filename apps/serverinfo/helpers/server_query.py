@@ -8,7 +8,7 @@ from lib.errors import *
 from apps.siteconfig.conf import Conf
 from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.models import Server, AttributeMapping
-from apps.serverinfo.helpers import server_columns, server_filters
+from apps.serverinfo.helpers import server_columns, server_filters, attribute
 
 class ServerQuery():
     totalCount = 0 # Populated by handle()
@@ -20,16 +20,13 @@ class ServerQuery():
     pagingStart = None # Populated by handleSorting()
     pagingCount = None # Populated by handleSorting()
 
-    #loadedFilters = {} # Populated by getFilterObj()
-
     attributesObj = None # Populated in generateDict(), used in generateDataTablesEntry()
 
     def __init__(self):
         self.serverColumns = server_columns.ServerColumns()
+        self.attributesManager = attribute.AttributeManager()
 
     def applyColumnFilter(self, serversObj, columnFilter, fieldName):
-        #filterPath = self.serverColumns.columnsDict[columnFilter].get('filter_path', str(columnFilter) + '__icontains')
-
         try:
             if columnFilter == 'NONE':
                 # We need to use a variable in our filter query, therefor we need to do the **{fieldName: ...} hack.
@@ -49,9 +46,7 @@ class ServerQuery():
         Collects and figure out information we need about the colum filtering. The filtering for each columns in the list.
         """
         configObj = Conf()
-        #visibleColumnFiltersRaw = self.keys.get('visibleColumnFilters', '').split('.')
         re_columnfilter = re.compile(r'^columnfilter_')
-        #requestedColumnFilters = []
 
         # Generate a list of every columns with the html class
         # .search_init (which are the columns which we can filter on)
@@ -66,7 +61,6 @@ class ServerQuery():
             # a part of columnsVisible to make sure we are returning the right amount of fields
             # back to the table at the end..
             if columnFilter.startswith('columnfilter_'):
-                #if columnFilter in visibleColumnFiltersRaw:
                 if columnFilter in columnsVisibleFilterableRaw:
                     isFilterable = True
                 else:
@@ -76,7 +70,6 @@ class ServerQuery():
 
                 if columnFilterID in self.serverColumns.columnsIDs:
                     if isFilterable:
-                        #self.visibleColumnFilters.append(columnFilterID)
                         self.columnsVisibleFilterable.append(columnFilterID)
 
                     columnsVisible.append(columnFilterID)
@@ -115,20 +108,11 @@ class ServerQuery():
 
 
     def handleMainQuery(self, serversObj):
-        # request -> query
-        # serverListObj -> serversObj
-        # attrToUse -> self.columnFiltersToUse
-        # visibleAttr -> self.visibleColumnFilters
-
-        # filter_main -> query
-        # filter_main = request.REQUEST.get('sSearch', False) # Main filter (top right)
-
         query = self.keys.get('sSearch', None)
 
-        q = Q() # WAS qObj
-        for columnFilter in self.columnsVisibleFilterable: # vAttr -> columnFilter
+        q = Q()
+        for columnFilter in self.columnsVisibleFilterable:
             # Check the config if we have any special way to filter this field. If not, use __icontains
-
             filterPath = self.serverColumns.columnsDict[columnFilter].get('filter_path', str(columnFilter) + '__icontains')
 
             q = q | Q(**{filterPath: query})
@@ -196,9 +180,54 @@ class ServerQuery():
         return serversObj
 
     def generateDataTablesEntry(self, serverObj):
+        """
+        Take care of all cell data..
+        Since the attributes is kinda tricky to filter on, we are also handling that here, while we already
+        loops trough the celldata.
+        """
         entryData = ['<img src=\"/static/serverinfo/img/details_open.png\" rel="%s">' % serverObj.id]
         for columnFilter in self.columnFiltersToUse:
-            try:
+            if columnFilter in self.attributeNames['all']:
+
+                # We are dealing with an attribute
+                if columnFilter in self.attributeNames['withcustom']:
+                    # Our attribute have a custom extension in apps.serverinfo.attributes
+
+                    if not self.attributesObj.get(serverObj.id, None):
+                        # Skip the whole row if our current attribute contains data which we should filter on
+                        if columnFilter in self.attributesWithData: return None
+
+                        # Add nothing if there is no attribute data on this server at all
+                        entryData.append('')
+                        continue
+
+                    if not self.attributesObj[serverObj.id]['attr'].get(columnFilter, None):
+                        if columnFilter in self.attributesWithData: return None
+
+                        # Add nothing if our attribute type is not present for this server.
+                        entryData.append('')
+                        continue
+
+                    attributeObj = self.attributesManager.getAttributeObj(columnFilter)()
+                    attributeData = []
+
+                    for attrValue in self.attributesObj[serverObj.id]['attr'][columnFilter]:
+                        # Loop trough every attribute value for each of the attributes for our serverObject
+                        # Note that a server can have several attributes of the same type, therefor this loop.
+                        if not attributeObj.searchFilter(serverObj, attrValue, self.keys):
+                            if columnFilter in self.attributesWithData:
+                                # Take away the whole row, but only if the value is anything..
+                                return None
+
+                        attributeData.append(attributeObj.toDisplayText(attrValue))
+
+                    entryData.append(', '.join(attributeData))
+                else:
+                    # FIXME, append the real data
+                    entryData.append('')
+
+            else:
+                # We are dealing with a normal field
                 columnData = getattr(serverObj, columnFilter)
                 # Special handlers for different types of data that can end up in a column
                 if callable(columnData):
@@ -224,20 +253,6 @@ class ServerQuery():
                     entryData.append(columnData)
                 else:
                     entryData.append(str(columnData))
-                    #entryData.append('* Unknown data *')
-
-            except AttributeError:
-                # We are probably dealing with an attribute since normal database query failed.
-                if not self.attributesObj.get(serverObj.id, None):
-                    entryData.append('')
-                    continue
-
-                if not self.attributesObj[serverObj.id]['attr'].get(columnFilter, None):
-                    entryData.append('')
-                    continue
-
-                entryData.append( ', '.join(self.attributesObj[serverObj.id]['attr'][columnFilter]) )
-                
 
         return entryData
 
@@ -264,17 +279,20 @@ class ServerQuery():
             "sEcho": self.keys.get('sEcho', 1),
             "iTotalRecords": self.totalCount,
             "iTotalDisplayRecords": self.requestedServerCount,
-            "aaData": []
+            "aaData": [],
+            "allIDs": [],
             }
 
-        #self.attributesObj = AttributeMapping.objects.select_related().filter(server__in=serversObj)
-
         self.attributesObj = self.genAttributeObj(serversObj)
+        self.attributeNames = self.attributesManager.getModuleNames()
+        self.attributesWithData = self.attributesManager.getWithData(self.keys)
 
         for serverEntry in serversObj:
+            # Will be None if any filter decides to not show the current item..
             serverDict = self.generateDataTablesEntry(serverEntry)
 
             if serverDict:
+                serversDict['allIDs'].append(str(serverEntry.id))
                 serversDict['aaData'].append(serverDict)
 
         return serversDict
@@ -303,11 +321,16 @@ class ServerQuery():
 
         # Take our list and all other information we currently have,
         # and generate a dict in the format that our datatable wants it
+        # NOTE: This function will also handle attributeFiltering. They are not db based
+        # and we need to check them after/while they are converted to a dict..
         serversDict = self.generateDict(serversObj)
+
+        # We are ready to count how many items we have..
+        serversDict['iTotalDisplayRecords'] = len(serversDict['aaData'])
 
         # Make sure our newly added server is on the top of our list
         # We don't need to count or do anything special with this. It
-        # will get another color as well in the gui
+        # will get another color as well in the gui (FIXME)
         newServer = keys.get('newserver', None)
         if newServer:
             try:
@@ -321,7 +344,7 @@ class ServerQuery():
         # freeze the current displayed list of servers, and filter on
         # that list as well.. This is placed here because we only want
         # a freeze list of whats displayed. Not everything that matches
-        serversDict['serversCSV'] = ','.join( [ str(s.id) for s in serversObj ] )
+        serversDict['serversCSV'] = ','.join(serversDict['allIDs'])
 
         # The api framework will take care of converting this into json
         return serversDict
