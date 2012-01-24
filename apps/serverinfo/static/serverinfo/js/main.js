@@ -25,6 +25,17 @@ function dump(arr, level) {
     return dumped_text;
 }
 
+function displayMessage(message) {
+    // FIXME: More dynamic, custom types, displaytime, closebutton and so on..
+    $('#messagebox').html(message);
+    $('#messagebox').addClass('info');
+    $('#messagebox').show();
+}
+
+function hideMessage() {
+    $('#messagebox').hide();
+}
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -234,8 +245,7 @@ $(document).ready(function() {
                 fnCallback(json)
             },
             error: function() {
-                // FIXME, this should be a notifier instead
-                alert("Error grabbing data from server..");
+                displayMessage('Error grabbing data from server..');
             }
         });
     },
@@ -283,9 +293,7 @@ $(document).ready(function() {
             data: dataArray,
             success: function(serverName){
                 // This span (.newserver) id is important, dont delete it..
-                $('#messagebox').html('Created new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');
-                $('#messagebox').addClass('info');
-                $('#messagebox').show();
+                displayMessage('Created new server <span class="newserver" id="' + serverName + '">' + serverName + '.</span> <a href="#" class="button newserverrefresh">Refresh view</a>');
                 oTable.fnDraw();
 
                 // fnDraw wont let us run this right after itself

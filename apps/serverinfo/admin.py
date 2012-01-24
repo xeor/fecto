@@ -36,7 +36,6 @@ class ServerAdmin(VersionAdmin):
 
     class Media:
         js = (
-            #'/static/serverinfo/js/ipLocator.js',
             #'/media/js/jquery-1.3.2.min.js',
             #'/media/js/adminServer.js',
             #settings.ADMIN_MEDIA_PREFIX + "js/SelectBox.js",
