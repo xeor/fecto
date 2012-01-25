@@ -19,22 +19,20 @@ def deep_update(from_dict, to_dict):
         else:
             to_dict[key] = value
 
-# this should be one of prod, qa, staging, dev. Default to dev for safety.
+# this should be one of prod, dev. Default to dev for safety.
 env = os.environ.get('APP_ENV', 'dev')
 
-# try to load user specific settings
-uid = pwd.getpwuid(os.getuid())[0]
-
-modules = ('upstream', 'common', env, uid)
+modules = ('upstream', 'common', env)
 current = __name__
 for module_name in modules:
     try:
+        print 'Loading', module_name
         module = getattr(__import__(current, globals(), locals(), [module_name]), module_name)
     except ImportError, e:
         print 'ERROR: Unable to import %s configuration: %s' % (module_name, e)
         raise
     except AttributeError, e:
-        if env == 'dev' and module_name == uid:
+        if env == 'dev':
             print 'WARNING: Unable to import %s dev configuration: does %s.py exist?' % (module_name, module_name)
         else:
             raise
