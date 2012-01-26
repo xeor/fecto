@@ -11,7 +11,6 @@ urlpatterns = patterns('',
                        url(r'^api/', include(api_urls)),
                        #url(r'^get/(.*)$', 'apps.serverinfo.views.getone'),
                        #url(r'^export/(.*)$', 'apps.serverinfo.views.export'),
-
-                       )
+)
 
 urlpatterns += staticfiles_urlpatterns()
