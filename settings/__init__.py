@@ -3,7 +3,10 @@ Original from https://code.djangoproject.com/wiki/SplitSettings#SettingInheritan
 but modified to fit the Fecto project
 """
 
-import os, pwd
+import os
+import pkgutil
+
+import apps
 
 # certain keys we want to merge instead of copy
 merge_keys = ('INSTALLED_APPS', 'MIDDLEWARE_CLASSES')
@@ -22,18 +25,22 @@ def deep_update(from_dict, to_dict):
 # this should be one of prod, dev. Default to dev for safety.
 env = os.environ.get('APP_ENV', 'dev')
 
-modules = ('upstream', 'common', env)
+appPath = os.path.dirname(apps.__file__)
+appNames = tuple(['apps.' + name + '.settings' for modLoader, name, isPkg in pkgutil.iter_modules([appPath])])
+
+modules = ('upstream', 'common', env) + appNames
+
 current = __name__
 for module_name in modules:
     try:
         print 'Loading', module_name
         module = getattr(__import__(current, globals(), locals(), [module_name]), module_name)
     except ImportError, e:
-        print 'ERROR: Unable to import %s configuration: %s' % (module_name, e)
+        print 'ERROR: Unable to import %s configuration because of ImportError: %s' % (module_name, e)
         raise
     except AttributeError, e:
         if env == 'dev':
-            print 'WARNING: Unable to import %s dev configuration: does %s.py exist?' % (module_name, module_name)
+            print 'WARNING: Unable to import %s because of AttributeError: %s' % (module_name, e)
         else:
             raise
 
