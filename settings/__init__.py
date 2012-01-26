@@ -5,6 +5,7 @@ but modified to fit the Fecto project
 
 import os
 import pkgutil
+import sys
 
 import apps
 
@@ -26,18 +27,21 @@ def deep_update(from_dict, to_dict):
 env = os.environ.get('APP_ENV', 'dev')
 
 appPath = os.path.dirname(apps.__file__)
-appNames = tuple(['apps.' + name + '.settings' for modLoader, name, isPkg in pkgutil.iter_modules([appPath])])
-
-modules = ('upstream', 'common', env) + appNames
+appSettings = tuple(['apps.' + name + '.settings' for modLoader, name, isPkg in pkgutil.iter_modules([appPath])])
 
 current = __name__
+globalSettings = ('upstream', 'common', env)
+globalSettings = tuple([ '%s.%s' % (current, s) for s in globalSettings])
+
+modules =  globalSettings + appSettings
+
 for module_name in modules:
     try:
-        print 'Loading', module_name
-        module = getattr(__import__(current, globals(), locals(), [module_name]), module_name)
+        __import__(module_name, globals(), locals())
+        module = sys.modules[module_name]
     except ImportError, e:
-        print 'ERROR: Unable to import %s configuration because of ImportError: %s' % (module_name, e)
-        raise
+        #print 'WARNING: Skipping import of %s because of ImportError: %s' % (module_name, e)
+        continue
     except AttributeError, e:
         if env == 'dev':
             print 'WARNING: Unable to import %s because of AttributeError: %s' % (module_name, e)

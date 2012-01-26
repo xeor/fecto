@@ -62,12 +62,7 @@ SOUTH_AUTO_FREEZE_APP = True
 INSTALLED_APPS = (
     # Admin specific stuff
     'django.contrib.admin',
-
-    # Documentation
     'django.contrib.admindocs',
-
-    # Static configuration
-    'apps.siteconfig',
 
     # Misc
     'django_hosts',
@@ -79,10 +74,7 @@ INSTALLED_APPS = (
     #'navigen', # Not yet ready, but might use it later
     'compressor',
 
-
-    # FIXME, autoimport apps with own config
-    'apps.contact',
-    'apps.serverinfo',
+    # Apps should include themself via an own settings file
 )
 
 LOGGING = {
