@@ -104,12 +104,11 @@ def details(request, serverID, naming='id'):
 
 
 def index(request):
-    c = Conf()
     serverColumns = server_columns.ServerColumns()
     serverFilters = server_filters.ServerFilters()
     attributeManager = attribute.AttributeManager()
 
-    columns = c.get('Text', 'usedColumns', 'apps.serverinfo') # was attributes =
+    columns = list(settings.APPS_SERVERINFO['visible_columns']) # Make columns a copy of the settings..
     attributeFilters = {}
 
     for column in serverColumns.columns:
