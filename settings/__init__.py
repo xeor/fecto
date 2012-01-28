@@ -10,7 +10,7 @@ import sys
 import apps
 
 # certain keys we want to merge instead of copy
-merge_keys = ('INSTALLED_APPS', 'MIDDLEWARE_CLASSES')
+merge_keys = ('INSTALLED_APPS',)
 
 def deep_update(from_dict, to_dict):
     for (key, value) in from_dict.iteritems():

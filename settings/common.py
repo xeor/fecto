@@ -29,6 +29,8 @@ STATICFILES_FINDERS = (
 # FIXME, import this from somewhere..
 SECRET_KEY = 's_^%8=qs+q@ae@y@g-6--+0z2gk9tl_vg_+*p1bxmy2=g8)x3='
 
+# Since order is so important with middleware classes we wont merge them between other configuration files
+# Duplicate the whole thing if you want to add something here in another config file...
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

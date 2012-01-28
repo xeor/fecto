@@ -48,7 +48,16 @@ DATABASES = {
 
 MIDDLEWARE_CLASSES = (
     'debug_toolbar.middleware.DebugToolbarMiddleware', # After encoding middlewares like gzip
-)
+    'django_hosts.middleware.HostsMiddleware', # Must be after debug_toolbar, even tough documentation says otherwise
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.transaction.TransactionMiddleware',
+    'reversion.middleware.RevisionMiddleware', # After TransactionMiddleware
+    )
+
 
 INSTALLED_APPS = (
     'debug_toolbar',
