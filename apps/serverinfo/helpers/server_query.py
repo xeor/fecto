@@ -2,10 +2,10 @@ import re
 import datetime
 
 from django.db.models import Q
+from django.conf import settings
 
 from lib.errors import *
 
-from apps.siteconfig.conf import Conf
 from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.models import Server, AttributeMapping
 from apps.serverinfo.helpers import server_columns, server_filters, attribute
@@ -45,7 +45,6 @@ class ServerQuery():
         """
         Collects and figure out information we need about the colum filtering. The filtering for each columns in the list.
         """
-        configObj = Conf()
         re_columnfilter = re.compile(r'^columnfilter_')
 
         # Generate a list of every columns with the html class
@@ -75,7 +74,7 @@ class ServerQuery():
                     columnsVisible.append(columnFilterID)
 
         # A list of all column filters that the user have globally configured to show.
-        conf_columnFilters = configObj.get('Text', 'usedColumns', 'apps.serverinfo')
+        conf_columnFilters = settings.APPS_SERVERINFO['visible_columns']
 
         for attributeColumn in self.serverColumns.getAttributeColumns():
             conf_columnFilters.append(attributeColumn['id'])

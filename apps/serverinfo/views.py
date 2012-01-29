@@ -7,7 +7,6 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.http import Http404
 
-from apps.siteconfig.conf import Conf
 from apps.serverinfo.models import Server, AttributeMapping, IP
 from apps.serverinfo import config
 from apps.serverinfo.helpers import server_columns, form_dynamics, server_filters, attribute
@@ -21,9 +20,6 @@ settings.TEMPLATE_DIRS = settings.TEMPLATE_DIRS + (filter_path,)
 # Same with attributes
 filter_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'attributes'))
 settings.TEMPLATE_DIRS = settings.TEMPLATE_DIRS + (filter_path,)
-
-# Special simplejson encoder to support ugettext_lazy objects..
-# See https://docs.djangoproject.com/en/dev/topics/serialization/#id2
 
 def getAttributeTableHtml(serverObj):
     attributesObj = AttributeMapping.objects.filter(server=serverObj).order_by('attributeType__name')
