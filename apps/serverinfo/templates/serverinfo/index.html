@@ -78,9 +78,18 @@ aoColumns.push(htmlOptions);
   <b>Show/hide columns: </b>
   |
   {% for a in columns %}
-    <a href="#" class="rowSelect" style="font-weight: bold;" id="row_{{ a.id }}">{{ a.name }}</a> |
+      {% if not a.isAttribute %}
+          <a href="#" class="rowSelect" style="font-weight: bold;" id="row_{{ a.id }}">{{ a.name }}</a> |
+      {% endif %}
   {% endfor %}
   <br />
+
+    <b>Show/hide attribute columns: </b>
+    |
+    {% for a in attributeColumns %}
+        <a href="#" class="rowSelect" style="font-weight: bold;" id="row_{{ a.id }}">{{ a.name }}</a> |
+    {% endfor %}
+    <br />
 
   <b>Filter selectors: </b>
   |

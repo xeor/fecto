@@ -65,8 +65,8 @@ class ServerColumns():
             typeDict['isAttribute'] = True # Must be set
             typeDict['defaultHidden'] = True
             typeDict['noDB'] = True
-            typeDict['noFilter'] = True # We cant search yet, no db..
-            typeDict['noSort'] = True # Doesnt work yet, it tries to sort via the db..
+            typeDict['noFilter'] = True # Filtering is handled by the attribute itself
+            typeDict['noSort'] = True # Searching is handled by the attribute itself
             self.attributeColumns.append(typeDict)
 
         return self.attributeColumns

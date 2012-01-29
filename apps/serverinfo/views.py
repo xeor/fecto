@@ -105,6 +105,7 @@ def index(request):
     attributeManager = attribute.AttributeManager()
 
     columns = list(settings.APPS_SERVERINFO['visible_columns']) # Make columns a copy of the settings..
+    attributeColumns = []
     attributeFilters = {}
 
     for column in serverColumns.columns:
@@ -114,7 +115,8 @@ def index(request):
             if column.get('isAttribute', None):
                 currentAttributeObj = attributeManager.getAttributeObj(column['id'])()
                 attributeFilters[column['id']] = currentAttributeObj.searchInput()
-                columns.append(column)
+                columns.append(column) # For the fields themself
+                attributeColumns.append(column) # For the attribute list
 
     # Remove all none dicts which is left because we didn't find a match
     [columns.remove(i) for i in columns if type(i) != dict]
@@ -129,7 +131,8 @@ def index(request):
         'serverinfo/index.html',
             {
             'columns': columns,
+            'attributeColumns': attributeColumns, # A list of attributes
             'filters': filters,
-            'attributeFilters': attributeFilters,
+            'attributeFilters': attributeFilters, # The filter (input fields) for the attributes
             }
         , context_instance=RequestContext(request))
