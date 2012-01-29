@@ -23,7 +23,6 @@ class ServerColumns():
             self.columnsDict[column['id']] = column
 
     def getNormalColumns(self):
-        # FIXME, generate this from a db query. Remember caching!
         columns = [
             # name            Display name
             # id              Short unique id

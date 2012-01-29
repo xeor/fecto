@@ -20,8 +20,8 @@ class Vlan(models.Model):
     network_objects = IPNetworkQuerySet.as_manager()
     vlanID = models.IntegerField(blank=True, null=True, db_index=True)
     location = models.ForeignKey(Location, blank=True, null=True, db_index=True)
-    skipFirst = models.IntegerField(blank=True, null=True, help_text=_('Dont use the first X IP\'s when calculating the next ip.'))
-    skipEnd = models.IntegerField(blank=True, null=True, help_text=_('Dont use the last X IP\'s when calculating the next ip.'))
+    skipFirst = models.IntegerField(blank=True, null=True, help_text=_('Don\'t use the first X IP\'s when calculating the next ip.'))
+    skipEnd = models.IntegerField(blank=True, null=True, help_text=_('Don\'t use the last X IP\'s when calculating the next ip.'))
     description = models.TextField(blank=True, null=True, db_index=True)
 
     def __unicode__(self):
@@ -129,7 +129,6 @@ class Server(models.Model):
     function = models.CharField(max_length=128, blank=True, null=True, db_index=True)
     description = models.TextField(blank=True, null=True, db_index=True)
     note = models.TextField(blank=True, null=True, help_text=_('IT note field. Not server description! Use only for temporary notes'))
-    #virtual = models.BooleanField(default=True) # Attribute
     ip = models.ManyToManyField(IP, blank=True, null=True)
     status = models.CharField('Status', blank=True, null=True, max_length=1, choices=statusLevels, default=2)
 
@@ -159,9 +158,6 @@ class AttributeType(models.Model):
     autopopulated = models.BooleanField(default=False) # Means they cant be edited, FIXME
     description = models.TextField(blank=True, null=True, db_index=True)
     multiple_allowed = models.BooleanField(default=True, db_index=True) # FIXME, verifier
-    # FIXME
-    # look for name + '_validator', '_to_python', '_from_python', '_html' and
-    # so on functions.. Maybe use some stuff from django newforms?
 
     # FIXME
     # Check that the name is not in the reserved internal used column names
@@ -172,7 +168,6 @@ class AttributeType(models.Model):
 class AttributeValue(models.Model): # Server attributes
     value = models.CharField(max_length=255, db_index=True)
     description = models.TextField(blank=True, null=True, db_index=True)
-    # FIXME: pickled field..
 
     def __unicode__(self):
         return self.value

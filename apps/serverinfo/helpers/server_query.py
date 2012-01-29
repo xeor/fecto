@@ -74,7 +74,7 @@ class ServerQuery():
                     columnsVisible.append(columnFilterID)
 
         # A list of all column filters that the user have globally configured to show.
-        conf_columnFilters = settings.APPS_SERVERINFO['visible_columns']
+        conf_columnFilters = list(settings.APPS_SERVERINFO['visible_columns'])
 
         for attributeColumn in self.serverColumns.getAttributeColumns():
             conf_columnFilters.append(attributeColumn['id'])
