@@ -4,12 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from django.contrib.auth.models import User
 
 from apps.contact.models import Location
-
-from apps.serverinfo.config import statusLevels
 
 from lib.fields import IPNetworkQuerySet
 from lib.validators import isValidIPv4Network
@@ -130,7 +129,7 @@ class Server(models.Model):
     description = models.TextField(blank=True, null=True, db_index=True)
     note = models.TextField(blank=True, null=True, help_text=_('IT note field. Not server description! Use only for temporary notes'))
     ip = models.ManyToManyField(IP, blank=True, null=True)
-    status = models.CharField('Status', blank=True, null=True, max_length=1, choices=statusLevels, default=2)
+    status = models.CharField('Status', blank=True, null=True, max_length=1, choices=settings.APPS_SERVERINFO['status_levels'], default=2)
 
     reg_time = models.DateTimeField('Registered', blank=True, null=True, auto_now_add=True)
     upd_time = models.DateTimeField('Updated', blank=True, null=True, auto_now=True)

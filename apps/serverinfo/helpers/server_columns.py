@@ -1,5 +1,7 @@
+from django.conf import settings
+from django.utils.datastructures import SortedDict
+from django.utils.encoding import force_unicode
 from apps.serverinfo.models import AttributeType
-from apps.serverinfo.config import statusLevelsDict
 
 class ServerColumns():
     columns = []
@@ -8,6 +10,7 @@ class ServerColumns():
     attributeColumns = []
 
     def __init__(self):
+        self.statusLevelsDict = SortedDict(map(lambda x: (x[0], force_unicode(x[1])), settings.APPS_SERVERINFO['status_levels']))
         if not self.columns:
             self.populate()
 
@@ -42,7 +45,7 @@ class ServerColumns():
             {'name': 'Note', 'id': 'note', 'editable': True},
             {'name': 'Virtual', 'id': 'virtual', 'editable': True},
             {'name': 'IP', 'id': 'ip', 'noSort': True, 'separator': ', ', 'filter_path': 'ip__ip__contains', 'editable': True},
-            {'name': 'Status', 'id': 'status', 'editable': True, 'selectFilter': statusLevelsDict},
+            {'name': 'Status', 'id': 'status', 'editable': True, 'selectFilter': self.statusLevelsDict},
             {'name': 'Registered', 'id': 'reg_time', 'defaultHidden': True},
             {'name': 'Updated', 'id': 'upd_time'},
             {'name': 'Actions', 'id': 'actions', 'noFilter': True, 'noDB': True, 'separator': ' | '},

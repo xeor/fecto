@@ -28,9 +28,9 @@ urlpatterns = patterns('',
                        )
 
 # Static views served by the rest framework itself
-urlpatterns = urlpatterns + patterns('djangorestframework.utils.staticviews',
-                                     (r'robots.txt', 'deny_robots'),
-                                     (r'favicon.ico', 'favicon'),
-                                     (r'^accounts/login/$', 'api_login'),
-                                     (r'^accounts/logout/$', 'api_logout'),
+urlpatterns += patterns('djangorestframework.utils.staticviews',
+                           (r'robots.txt', 'deny_robots'),
+                           (r'favicon.ico', 'favicon'),
+                           (r'^accounts/login/$', 'api_login'),
+                           (r'^accounts/logout/$', 'api_logout'),
 )

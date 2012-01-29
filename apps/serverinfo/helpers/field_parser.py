@@ -1,4 +1,7 @@
 from apps.serverinfo import config as serverinfoConfig
+from apps.serverinfo.helpers import server_columns
+
+serverColumns = server_columns.ServerColumns()
 
 def status(value):
     if value == '6': # hidden
@@ -6,6 +9,6 @@ def status(value):
     else:
         appendedText = ''
 
-    statusText = serverinfoConfig.statusLevelsDict[value]
+    statusText = serverColumns.statusLevelsDict[value]
 
     return '%s %s' % (statusText, appendedText)

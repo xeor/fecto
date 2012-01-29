@@ -1,3 +1,4 @@
+from django.conf import settings
 import ipaddr
 
 import reversion
@@ -11,7 +12,6 @@ from django.utils.encoding import force_unicode
 
 from apps.serverinfo.views import getAttributeTableHtml, getIpTableHtml
 from apps.serverinfo.models import Server, IP, Vlan, AttributeMapping, AttributeValue, AttributeType, Note
-from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.helpers import server_columns
 
 from lib.pinger import Pinger
@@ -56,7 +56,7 @@ class ServerInlineForm():
 
         if field in ['status',]:
             current = str(getattr(serverObj, field))
-            data = dict(serverinfoConfig.statusLevels)
+            data = dict(settings.APPS_SERVERINFO['status_levels'])
 
             # The entries in serverinfoConfig.statusLevels are django
             # ugettext objects for making translation possible. The
