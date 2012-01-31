@@ -6,7 +6,6 @@ from django.conf import settings
 
 from lib.errors import *
 
-from apps.serverinfo import config as serverinfoConfig
 from apps.serverinfo.models import Server, AttributeMapping
 from apps.serverinfo.helpers import server_columns, server_filters, attribute
 
@@ -124,7 +123,7 @@ class ServerQuery():
         Run the trough every custom filters and apply their own filter functions to the serversObj
         """
         serverFilters = server_filters.ServerFilters()
-        for customFilter in serverinfoConfig.filters:
+        for customFilter in serverFilters.getFilterNames():
             filterObj = serverFilters.getFilterObj(customFilter)
             if filterObj is False: continue
 

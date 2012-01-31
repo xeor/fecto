@@ -1,9 +1,9 @@
-#!/usr/bin/env python
-
 from apps.serverinfo.views import getIpInputHtml
 
 from apps.serverinfo.models import Vlan
 from apps.contact.models import Location
+
+name = 'Subnet/Vlan'
 
 def filter(keys, dbObj):
     '''
@@ -34,9 +34,6 @@ def filter(keys, dbObj):
         return dbObj
 
     return False
-
-def ajax(request):
-    return 'some ajax text'
 
 def templateDict(request):
     '''

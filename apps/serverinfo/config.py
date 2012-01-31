@@ -1,11 +1,3 @@
-# FIXME, handle separators in serverlist
-# FIXME, move all this columns stuff out of config.py!
-
-filters = [
-    {'name': 'VLan/subnet', 'id': 'subnet'},
-    {'name': 'Manual', 'id': 'manual',},
-    ]
-
 # Configuration which are dynamicly gathered and made available in the
 # admin, DONT change this without knowing what you are doing.. Its
 # internally used. Not in use yet :)

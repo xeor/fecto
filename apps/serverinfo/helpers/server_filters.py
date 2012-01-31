@@ -1,5 +1,9 @@
+import os
+import pkgutil
 import re
 import sys
+
+import apps.serverinfo.filters
 
 class ServerFilters:
     '''
@@ -7,6 +11,24 @@ class ServerFilters:
     '''
 
     loadedFilters = {}
+    filters = []
+
+    def getFilterNames(self):
+        if self.filters:
+            return self.filters
+
+        modulePath = os.path.dirname(apps.serverinfo.filters.__file__)
+        for modLoader, name, isPkg in pkgutil.iter_modules([modulePath]):
+            fullImportPath = 'apps.serverinfo.filters.%s' % name
+            try:
+                __import__(fullImportPath)
+                moduleObj = sys.modules[fullImportPath]
+                self.filters.append({'name': moduleObj.name, 'id': name})
+            except ImportError:
+                # FIXME: Log error..
+                continue
+
+        return self.filters
 
     def getFilterObj(self, filterEntry, request=None):
         filterID = filterEntry['id']

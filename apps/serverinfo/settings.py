@@ -11,6 +11,7 @@ APPS_SERVERINFO = {
     'visible_columns': [
         # What columns from the default datafields should be visible? You can also change the order of appearance.
         # If you need to add a new field in the database, add it here, models.py and helpers/server_columns.py
+        # If you want to hide some fields, just comment them out.
         u'name',
         u'function',
         u'description',

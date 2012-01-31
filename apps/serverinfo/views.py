@@ -8,7 +8,6 @@ from django.conf import settings
 from django.http import Http404
 
 from apps.serverinfo.models import Server, AttributeMapping, IP
-from apps.serverinfo import config
 from apps.serverinfo.helpers import server_columns, form_dynamics, server_filters, attribute
 
 from forms import AddAttributeForm, AddIPForm
@@ -122,7 +121,7 @@ def index(request):
     [columns.remove(i) for i in columns if type(i) != dict]
 
     filters = []
-    for f in config.filters:
+    for f in serverFilters.getFilterNames():
         filterObj = serverFilters.getFilterObj(f, request=request)
         if not filterObj: continue
         filters.append(filterObj)

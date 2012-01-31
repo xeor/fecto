@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+
+name = 'Manual'
 
 def filter(keys, dbObj):
     # FIXME, not done at all!
