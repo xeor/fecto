@@ -25,6 +25,7 @@ class ServerFilters:
                 moduleObj = sys.modules[fullImportPath]
                 self.filters.append({'name': moduleObj.name, 'id': name})
             except ImportError:
+                print 'error importing', fullImportPath
                 # FIXME: Log error..
                 continue
 
@@ -33,7 +34,8 @@ class ServerFilters:
     def getFilterObj(self, filterEntry, request=None):
         filterID = filterEntry['id']
 
-        if not re.match(r'^[a-z]+$', filterID):
+        if not re.match(r'^[a-zA-Z_-]+$', filterID):
+            # FIXME, log
             return False
 
         if self.loadedFilters.get(filterID):
