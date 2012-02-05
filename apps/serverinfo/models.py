@@ -1,3 +1,4 @@
+from django.core.cache import cache
 import ipaddr
 
 from django.utils.translation import ugettext_lazy as _
@@ -9,6 +10,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 
 from apps.contact.models import Location
+from apps.serverinfo import helpers
 
 from lib.fields import IPNetworkQuerySet
 from lib.validators import isValidIPv4Network
@@ -122,12 +124,10 @@ post_save.connect(fixVlan, sender=IP)
 
 
 class Server(models.Model):
-    # Remember add new options to config.py as well.. All the configuration is there..
-
     name = models.CharField(max_length=64, unique=True, db_index=True)
     function = models.CharField(max_length=128, blank=True, null=True, db_index=True)
     description = models.TextField(blank=True, null=True, db_index=True)
-    note = models.TextField(blank=True, null=True, help_text=_('IT note field. Not server description! Use only for temporary notes'))
+    note = models.TextField(blank=True, null=True)
     ip = models.ManyToManyField(IP, blank=True, null=True)
     status = models.CharField('Status', blank=True, null=True, max_length=1, choices=settings.APPS_SERVERINFO['status_levels'], default=2)
 
@@ -150,6 +150,19 @@ class Server(models.Model):
         actions.append('<a href="ssh://' + self.name + '">SSH</a>')
         return actions
 
+def clearCache(sender, **kwargs):
+    obj = kwargs['instance']
+    cache_name_servercolumn = 'serverinfo:%s' % obj.id
+
+    conf_columnFilters = list(settings.APPS_SERVERINFO['visible_columns'])
+    serverColumns = helpers.server_columns.ServerColumns()
+    for attributeColumn in serverColumns.getAttributeColumns():
+        conf_columnFilters.append(attributeColumn['id'])
+
+    for columnNames in conf_columnFilters:
+        cache.delete(cache_name_servercolumn + ':' + columnNames)
+    cache.delete(cache_name_servercolumn)
+post_save.connect(clearCache, sender=Server)
 
 class AttributeType(models.Model):
     id_name = models.CharField(max_length=32, db_index=True, unique=True)

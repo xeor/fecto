@@ -1,5 +1,6 @@
 import re
 import datetime
+from django.core.cache import cache
 
 from django.db.models import Q
 from django.conf import settings
@@ -11,7 +12,6 @@ from apps.serverinfo.helpers import server_columns, server_filters, attribute
 
 class ServerQuery():
     totalCount = 0 # Populated by handle()
-    requestedServerCount = 0 # Populated by handle()
 
     columnsVisibleFilterable = [] # Populated by handleColumnFilters()
     columnFiltersToUse = [] # Populated by handleColumnFilters()
@@ -98,7 +98,6 @@ class ServerQuery():
 
             columnFilters[columnFilter] = requestedColumnFilter
 
-
         for columnFilter in columnFilters:
             serversObj = self.applyColumnFilter(serversObj, columnFilters[columnFilter], columnFilter)
 
@@ -183,10 +182,26 @@ class ServerQuery():
         Since the attributes is kinda tricky to filter on, we are also handling that here, while we already
         loops trough the celldata.
         """
+        cacheTimeout = 3600 # Caching timeout inside this function
+
+        # This cache name is used with both the complete entryData caching (every info about a server), and
+        # cache_name_servercolumn + ':' + columnName for each attributes. We are grabbing all the info for each
+        # server each time, not just what we really need, for now (the plan is to add/remove columns without the need
+        # of refreshing).
+        cache_name_servercolumn = 'serverinfo:%s' % serverObj.id
+        cached_version = cache.get(cache_name_servercolumn)
+        if cached_version:
+            return cached_version
+
         entryData = ['<img src=\"/static/serverinfo/img/details_open.png\" rel="%s">' % serverObj.id]
         for columnFilter in self.columnFiltersToUse:
-            if columnFilter in self.attributeNames['all']:
+            cache_name_servercolumn_single = '%s:%s' % (cache_name_servercolumn, columnFilter)
+            cached_version = cache.get(cache_name_servercolumn_single)
+            if cached_version != None: # The cached version can be '', so we must check against None
+                entryData.append(cached_version)
+                continue
 
+            if columnFilter in self.attributeNames['all']:
                 # We are dealing with an attribute
                 if columnFilter in self.attributeNames['withcustom']:
                     # Our attribute have a custom extension in apps.serverinfo.attributes
@@ -196,6 +211,7 @@ class ServerQuery():
                         if columnFilter in self.attributesWithData: return None
 
                         # Add nothing if there is no attribute data on this server at all
+                        cache.set(cache_name_servercolumn_single, '', cacheTimeout)
                         entryData.append('')
                         continue
 
@@ -203,6 +219,7 @@ class ServerQuery():
                         if columnFilter in self.attributesWithData: return None
 
                         # Add nothing if our attribute type is not present for this server.
+                        cache.set(cache_name_servercolumn_single, '', cacheTimeout)
                         entryData.append('')
                         continue
 
@@ -219,12 +236,15 @@ class ServerQuery():
 
                         attributeData.append(attributeObj.toDisplayText(attrValue))
 
-                    entryData.append(', '.join(attributeData))
+                    columnData = ', '.join(attributeData)
+                    entryData.append(columnData)
                 else:
                     try:
-                        entryData.append( ', '.join(self.attributesObj[serverObj.id]['attr'][columnFilter]) )
+                        columnData = ', '.join(self.attributesObj[serverObj.id]['attr'][columnFilter])
+                        entryData.append(columnData)
                     except KeyError:
-                        entryData.append('')
+                        columnData = ''
+                        entryData.append(columnData)
 
             else:
                 # We are dealing with a normal field
@@ -239,6 +259,8 @@ class ServerQuery():
 
                 if hasattr(columnData, 'all'): # This is a many2many field
                     # FIXME, config separator
+                    # FIXME, use prefetch_related when it comes.. https://docs.djangoproject.com/en/dev/ref/models/querysets/#prefetch-related
+                    # FIXME, this thing is expensive...
                     columnData = ', '.join([ str(s) for s in columnData.all() ])
 
                 if type(columnData) == list:
@@ -252,13 +274,17 @@ class ServerQuery():
                 if type(columnData) == str or type(columnData) == unicode:
                     entryData.append(columnData)
                 else:
-                    entryData.append(str(columnData))
+                    columnData = str(columnData)
+                    entryData.append(columnData)
 
+            cache.set(cache_name_servercolumn_single, columnData, cacheTimeout)
+
+        cache.set(cache_name_servercolumn, entryData, cacheTimeout)
         return entryData
 
     def genAttributeObj(self, servers):
         servers = [ s for s in servers ] # Workaround for bug: <broken repr (DatabaseError:....
-        attributesObj = AttributeMapping.objects.select_related().filter(server__in=servers)
+        attributesObj = AttributeMapping.objects.select_related().filter(server__in=servers) # Preget everything
         allAttributes = {}
         for attribute in attributesObj:
             serverID = attribute.server_id
@@ -278,11 +304,9 @@ class ServerQuery():
         serversDict = {
             "sEcho": self.keys.get('sEcho', 1),
             "iTotalRecords": self.totalCount,
-            "iTotalDisplayRecords": self.requestedServerCount,
             "aaData": [],
             "allIDs": [],
             }
-
         self.attributesObj = self.genAttributeObj(serversObj)
         self.attributeNames = self.attributesManager.getModuleNames()
         self.attributesWithData = self.attributesManager.getWithData(self.keys)
@@ -303,31 +327,27 @@ class ServerQuery():
         self.totalCount = serversObj.count()
         self.keys = keys
 
-        serversObj = serversObj.exclude(status=6)
-
+        serversObj = serversObj.exclude(status=6) # Exclude those with status hidden, new servers
         serversObj = self.handleManualGETs(serversObj)
         serversObj = self.handleColumnFilters(serversObj)
         serversObj = self.handleMainQuery(serversObj)
         serversObj = self.handleCustomFilters(serversObj)
         serversObj = self.handleSorting(serversObj)
-
         # Filter out dupes which we might have because of many2many relations
         serversObj = serversObj.distinct()
-
-        self.requestedServerCount = serversObj.count()
-
+        availableCount = serversObj.count()
         # Only grab whatever requested.
-        serversObj = serversObj[self.pagingStart:self.pagingStart + self.pagingCount]
-
+        if self.pagingCount > 0:
+            # self.pagingCount can be -1 if we are displaying everything
+            serversObj = serversObj[self.pagingStart:self.pagingStart + self.pagingCount]
         # Take our list and all other information we currently have,
         # and generate a dict in the format that our datatable wants it
         # NOTE: This function will also handle attributeFiltering. They are not db based
         # and we need to check them after/while they are converted to a dict..
-        serversDict = self.generateDict(serversObj)
-
+        serversDict = self.generateDict(serversObj) # FIXME, slow
+        serversDict['iTotalDisplayRecords'] = availableCount
         # We are ready to count how many items we have..
-        serversDict['iTotalDisplayRecords'] = len(serversDict['aaData'])
-
+        #serversDict['iTotalDisplayRecords'] = len(serversDict['aaData'])
         # Make sure our newly added server is on the top of our list
         # We don't need to count or do anything special with this. It
         # will get another color as well in the gui (FIXME)
@@ -345,7 +365,7 @@ class ServerQuery():
         # that list as well.. This is placed here because we only want
         # a freeze list of whats displayed. Not everything that matches
         serversDict['serversCSV'] = ','.join(serversDict['allIDs'])
-
+        print 'end of handle'
         # The api framework will take care of converting this into json
         return serversDict
 
