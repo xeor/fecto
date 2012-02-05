@@ -51,11 +51,6 @@ aoColumns.push(htmlOptions);
 <script type="text/javascript" src="{{ STATIC_URL }}serverinfo/js/main.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/js/jquery.dataTables.min.js"></script>
 
-<!-- Old?? FIXME
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/js/ZeroClipboard.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/DataTables-1.8.1/media/js/TableTools.js"></script>
--->
-
 <script type="text/javascript" src="{{ STATIC_URL }}serverinfo/lib/jquery.jeditable.mini.js"></script>
 
 {% endblock extrajs %}
@@ -63,14 +58,13 @@ aoColumns.push(htmlOptions);
 {% block content %}
 
 <div class="messagebox" id="messagebox"></div>
-<!--<div id="id_ip"></div>-->
 
 <div id="list">
-  <b>Administer: </b>
-  |
-  <a href="#" id="admLink_newserv">New server</a> |
+<b>Administer: </b>
+|
+<a href="#" id="admLink_newserv">New server</a> |
 
-  <!-- Freeze list is populated using javascript ( we need the list first :) ) -->
+<!-- Freeze list is populated using javascript ( we need the list first :) ) -->
   <a href="#" id="admLink_frozenlist">Freeze list</a> (
   <a href="{% url serverinfo-root %}" id="admLink_unfreeze">unfreeze</a>) |
   <br />
@@ -91,7 +85,7 @@ aoColumns.push(htmlOptions);
     {% endfor %}
     <br />
 
-  <b>Filter selectors: </b>
+  <b>Filters: </b>
   |
   {% for f in filters %}
     <a href="#" class="filterToggle" id="filter_{{ f.id }}">{{ f.name }}</a> |
@@ -101,7 +95,7 @@ aoColumns.push(htmlOptions);
     {% for f in filters %}
       <div class="filterJail" id="jail_filter_{{ f.id }}">
         <fieldset class="filter_list">
-          <legend class="filter_list">{{ f.id }}</legend>
+          <legend class="filter_list">{{ f.name }}</legend>
           {% include f.template with data=f.templateDict %}
         </fieldset>
       </div>
