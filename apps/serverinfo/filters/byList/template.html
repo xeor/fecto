@@ -1,0 +1,11 @@
+<textarea rows="15" cols="40" class="filter_value" id="filter_byList_value"></textarea>
+<br />
+<input type="button" id="submit_bylist" value="Only include servers from the list" />
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#submit_bylist').click(function() {
+    oTable.fnDraw();
+  });
+});
+</script>
