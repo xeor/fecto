@@ -127,7 +127,6 @@ class ServerInlineForm():
     def getFieldHistory(self, keys):
         """
         FIXME: work in progress.. just notes right now..
-        NEXT
         """
         fieldID = keys.get('id')
         attributeMappingObj = get_object_or_404(AttributeMapping, id=attrID)

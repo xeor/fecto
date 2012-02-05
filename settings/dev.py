@@ -20,6 +20,7 @@ DEBUG_TOOLBAR_PANELS = (
     'debug_toolbar.panels.sql.SQLDebugPanel',
     'debug_toolbar.panels.signals.SignalDebugPanel',
     'debug_toolbar.panels.logger.LoggingPanel',
+    #'lib.debug_profiling.ProfilingPanel',
     )
 
 CACHE_TIMEOUT = 5
@@ -47,8 +48,10 @@ DATABASES = {
 }
 
 MIDDLEWARE_CLASSES = (
-    'debug_toolbar.middleware.DebugToolbarMiddleware', # After encoding middlewares like gzip
-    'django_hosts.middleware.HostsMiddleware', # Must be after debug_toolbar, even tough documentation says otherwise
+    # Check https://github.com/django-debug-toolbar/django-debug-toolbar/issues/75 for the issue about the order
+    # of debug_toolbar and django_hosts..
+    'django_hosts.middleware.HostsMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

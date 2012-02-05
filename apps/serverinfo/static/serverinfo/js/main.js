@@ -119,6 +119,12 @@ function fnShowHide(iColName) {
     oTable.fnDraw();
 }
 
+function deleteCookie ( cookie_name ) {
+    var cookie_date = new Date ();  // current date & time
+    cookie_date.setTime ( cookie_date.getTime() - 1 );
+    document.cookie = cookie_name += "=; expires=" + cookie_date.toGMTString();
+}
+
 function fnResetAllFilters() {
     var oSettings = oTable.fnSettings();
     for (iCol = 0; iCol < oSettings.aoPreSearchCols.length; iCol++) {
@@ -131,7 +137,7 @@ function fnResetAllFilters() {
     });
 
     // FIXME, should also delete oTable cookie
-    oTable.fnSortNeutral();
+    deleteCookie('SpryMedia_DataTables_serverlist_');
     oTable.fnDraw();
 }
 
