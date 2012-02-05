@@ -5,13 +5,13 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#subnet_form').change(function() {
-    var data = '';
-    $('.subnet_selects').each(function() {
-      data += $(this).attr('rel') + '-' + $(this).val() + ',';
+    $('#subnet_form').change(function() {
+        var data = '';
+        $('.subnet_selects').each(function() {
+            data += $(this).attr('rel') + '-' + $(this).val() + ',';
+        });
+        $('#filter_subnet_value').val(data);
+        oTable.fnDraw();
     });
-    $('#filter_subnet_value').val(data);
-    oTable.fnDraw();
-  });
 });
 </script>
